@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTPRINTS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" type="image/x-icon" href="assets/logo1.png">
+    <script src="index.js"></script>
+</head>
+<body>
+    <div class="loader-wrapper">
+        <div class="loader">
+            <span class="loader-inner"><span>WTPRINTS<div class="loader-in-line"></div></span></span>
+        </div>
+    </div>
+    <div class="filter-blur">
+        <header class="navtotal">
+            <div class="navbar">
+                <a href="#">
+                    <div class="nav-logo">
+                        <h1 class="nav-txt">WTPRINTS</h1>
+                    </div>
+                </a>
+                <div class="search-bar">
+                    <div class="search-region">
+                        <form action="" class="search-form">
+                            <input type="text" placeholder="search" name="search" class="search-area">
+                            <button type="submit" class="search-button"><img src="assets/search-icon.png" alt="search-icon" style="width: 100%;"></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="nav-components">
+                    <a href="login.html">
+                        <div>
+                            <div>
+                                <p style="font-size: large;">My Designs</p>
+                            </div>
+                        </div>
+                    </a>
+                    <section style="width: 1px;height: 100%;background-color: black;">
+                    </section>
+                    <a href="login.html">
+                        <div>
+                            <div>
+                                <p style="font-size: large;">Sign in/up</p>
+                            </div>
+                        </div>
+                    </a>
+                    <section style="width: 1px;height: 100%;background-color: black;">
+                    </section>
+                    <!-- <a href="#">
+                        <div>
+                            <div>
+                                <img src="assets/Xerox.png" alt="Xerox"><p>Xerox ?</p>
+                            </div>
+                        </div>
+                    </a> -->
+                    <div class="nav-icons">
+                        <a href="#">
+                            <div>
+                                <div>
+                                    <img src="assets/cart-icon.png" alt="cart">
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#">
+                            <div>
+                                <div>
+                                    <img src="assets/favourites-icon.png" alt="favourites">
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#">
+                            <div>
+                                <div index="three-dots" onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                                    <img src="assets/three-dots.png" alt="Help" style="width: 25px;height: 25px;">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav-drop-down">
+                <ul>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                T-Shirts
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Hoodies
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Lower
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Bags
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Caps
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Visiting Cards
+                            </div>
+                        </a>
+                    </li>
+                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                        <a href="#">
+                            <div>
+                                Others
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main id="main">
+            <div class="black-screen" id="black-screen"></div>
+            <section class="container">
+                <div class="slide-wrapper">
+                    <div class="slides">
+                        <a href="#"><img src="assets/OversizeT.jpg" alt="OversizeT" id="slide-1" class="slide"></a>
+                        <a href="#"><img src="assets/Cargo.jpg" alt="Cagro" id="slide-2" class="slide"></a>
+                        <a href="#"><img src="assets/Joggers.jpg" alt="Joggers" id="slide-3" class="slide"></a>
+                        <a href="#"><img src="assets/Tshirt.jpg" alt="Tshirt" id="slide-4" class="slide"></a>
+                        <a href="#"><img src="assets/Jeans.jpg" alt="Jeans" id="slide-5" class="slide"></a>
+                    </div>
+                    <div class="slider-nav">
+                        <div id="slide1"></div>
+                        <div id="slide2"></div>
+                        <div id="slide3"></div>
+                        <div id="slide4"></div>
+                        <div id="slide5"></div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <!-- <div class="selection">
+                    <div class="selection-text">
+                        <h1 style="align-self: center;">CHOOSE WHAT YOU WANT</h1>
+                        <div class="selection-text-division">
+                            <p>We have a wide range of products for you to choose from. You can either select from our readymade collection or you can customize your own cloths.</p>
+                        </div>
+                    </div>
+                    <div class="select-custom-readymade">
+                        <div class="custom">
+                            <h2>CUSTOM CLOTHS</h2>
+                            <a href="custom.html"><img src="assets/Custom-Shirt.jpeg" alt="Custom-Shirt"></a>
+                        </div>
+                        <div class="readymade">
+                            <h2>BRANDED CLOTHS</h2>
+                            <a href="#"><img src="assets/Branded-Shirt.jpeg" alt="Branded-Shirt"></a>
+                        </div>
+                    </div>
+                </div> -->
+            </section>
+            <section>
+                <h1 style="text-align: center;padding: 10px;">BROWSE TEES</h1>
+                <div class="browsing-section">
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/Tees.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>TEES</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a T-Shirt, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/tees1.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>TEES</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a T-Shirt, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/tees2.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>TEES</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a T-Shirt, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/tees3.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>TEES</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a T-Shirt, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top: 7vh;padding-bottom: 5vh;text-align: center;"><h3 style="font-weight: 500;color: rgb(64, 64, 226);text-decoration: underline;"><a href="#" style="cursor: pointer;color: rgb(64, 64, 226);">Explore All</a></h3></div>
+                <h1 style="text-align: center;padding: 10px;">BROWSE CARGOS</h1>
+                <div class="browsing-section">
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/cargo.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>CARGO</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Cargo, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/cargo1.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>CARGO</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Cargo, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/cargo2.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>CARGO</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Cargo, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/cargo3.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>CARGO</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Cargo, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top: 7vh;padding-bottom: 5vh;text-align: center;"><h3 style="font-weight: 500;color: rgb(64, 64, 226);text-decoration: underline;"><a href="#" style="cursor: pointer;color: rgb(64, 64, 226);">Explore All</a></h3></div>
+                <h1 style="text-align: center;padding: 10px;">BROWSE HOODIES</h1>
+                <div class="browsing-section">
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/hoodie.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>HOODIE</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Hoodie, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/hoodie1.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>HOODIE</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Hoodie, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/hoodie2.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>HOODIE</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Hoodie, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browsing-section-tees">
+                        <div class="browsing-images-section">
+                            <img src="assets/hoodie3.jpg" alt="tees" class="browsing-images">
+                        </div>
+                        <div>
+                            <div class="browsing-section-tees-data">
+                                <h3>HOODIE</h3>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">This is a Hoodie, yes it is!!!</p>
+                            </div>
+                            <div class="browsing-section-tees-data">
+                                <p style="font-family: League Spartan, sans-serif;">Prize: ????</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top: 7vh;padding-bottom: 5vh;text-align: center;"><h3 style="font-weight: 500;color: rgb(64, 64, 226);text-decoration: underline;"><a href="#" style="cursor: pointer;color: rgb(64, 64, 226);">Explore All</a></h3></div>
+                <div class="login-to-access">
+                    <div class="login-to-access-text">
+                        <h1>LOGIN TO SEE YOUR DESIGNS</h1>
+                    </div>
+                    <div class="login-to-access-text">
+                        <p>Login to access your account and to see your designs, favourites and cart. And many more Designs.</p>
+                    </div>
+                    <div class="login-to-access-text">
+                        <a href="login.html"><button class="login-to-access-button">LOGIN</button></a>
+                    </div>
+                </div>
+            </section>
+            <script>
+                function blackscreen(){
+                    document.getElementById("main").style.opacity=0.5;
+                }
+                function blackscreenout(){
+                    document.getElementById("main").style.opacity=1;
+                }
+            </script>
+        </main>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2><span class="brand-highlight">WT</span>PRINTS</h2>
+                    <p>Your trusted fashion destination for bold, expressive, and stylish clothing. Stay unique. Stay printed.</p>
+                </div>
+                <div class="footer-links">
+                    <div>
+                        <h4>Men</h4>
+                        <ul>
+                            <li><a href="#">Oversized T-Shirts</a></li>
+                            <li><a href="#">T-Shirts</a></li>
+                            <li><a href="#">Joggers</a></li>
+                            <li><a href="#">Cargos</a></li>
+                            <li><a href="#">Caps</a></li>
+                            <li><a href="#">Jeans</a></li>
+                            <li><a href="#">Shackets</a></li>
+                            <li><a href="#">Bomber Jackets</a></li>
+                        </ul>
+                    </div>
+                <div>
+                    <h4>Women</h4>
+                    <ul>
+                        <li><a href="#">Oversized T-Shirts</a></li>
+                        <li><a href="#">T-Shirts</a></li>
+                        <li><a href="#">Joggers</a></li>
+                        <li><a href="#">Cargos</a></li>
+                        <li><a href="#">Caps</a></li>
+                        <li><a href="#">Jeans</a></li>
+                        <li><a href="#">Crop Tops</a></li>
+                        <li><a href="#">Co-ord Sets</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Affiliate Program</a></li>
+                    </ul>
+                </div>  
+                <div>
+                    <h4>Follow Us</h4>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">TikTok</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-extra">
+                    <div>
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Customer Service</h4>
+                        <ul>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Shipping & Returns</a></li>
+                            <li><a href="#">Track Your Order</a></li>
+                            <li><a href="#">Size Guide</a></li>
+                        </ul>
+                    </div>
+                </div>  
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WTPRINTS. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        window.addEventListener("load", function() {
+            document.querySelector(".loader-wrapper").style.display = "none";
+            document.querySelector(".filter-blur").classList.remove("filter-blur");
+        });
+    </script>
+</body>
+</html>
