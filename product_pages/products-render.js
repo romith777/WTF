@@ -22,7 +22,7 @@ function renderProducts(type){
                             <p class="browse-card-information-text">Price : $<span class="browse-card-information-price">${formatCurrency(product.priceCents)}</span></p>
                         </div>
                         <div class="browse-card-information-area-wishlist">
-                            <img src="../assets/favourites-icon-unclick.png" class="browse-card-wishlist" data-product-id="${product.id}" data-is-checked="unchecked">
+                            <img src="../assets/favourites-icon-unclick.png" class="browse-card-wishlist" data-product-id="${product.id}" data-is-checked="${localStorage.getItem(`${product.id}-fav-status`)||"unchecked"}" >
                         </div>
                     </div>
                     <button class="add-to-cart-button">Add To Cart</button>
@@ -39,27 +39,37 @@ function updateFavCount(){
 
 updateFavCount();
 
+function renderFavStatus(){
+    document.querySelectorAll(".browse-card-wishlist").forEach(element=>{
+        let productId = element.dataset.productId;
+        if(localStorage.getItem(`${productId}-fav-status`) == 'checked'){
+            element.src="../assets/favourites-icon.png";
+            console.log("hooo");
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded",()=>{
+    renderFavStatus();
     document.querySelectorAll(".browse-card-wishlist").forEach((element)=>{
         element.addEventListener('click',()=>{
+            let productId = element.dataset.productId;
             let isChecked = element.dataset.isChecked;
-            console.log(isChecked);
             if(isChecked == 'unchecked'){
-                let productId = element.dataset.productId;
+                localStorage.setItem(`${productId}-fav-status`,'checked');
                 favCount++;
                 localStorage.setItem('favCount',favCount);
                 element.dataset.isChecked = "checked";
                 updateFavCount();
                 element.src="../assets/favourites-icon.png";
-                console.log(element.src);
             }
             else if(isChecked == 'checked'){
-                element.dataset.isChecked = "unchecked"
+                element.dataset.isChecked = "unchecked";
+                localStorage.setItem(`${productId}-fav-status`,'unchecked');
                 favCount--;
                 localStorage.setItem('favCount',favCount);
                 updateFavCount();
                 element.src="../assets/favourites-icon-unclick.png";
-                console.log(element.src);
             }
         });
     });
