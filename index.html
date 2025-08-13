@@ -405,6 +405,7 @@
                 function blackscreenout(){
                     document.getElementById("main").style.opacity=1;
                 }
+                document.querySelector(".js-favourites-count").innerHTML = localStorage.getItem('favCount') || 0;
             </script>
         </main>
         <footer class="footer">
