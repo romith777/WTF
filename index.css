@@ -452,3 +452,20 @@ main{
   min-width: 150px;
   flex: 1 1 200px;
 }
+
+/* Universal */
+.add-to-cart-button{
+    align-self: center;
+    width: 100%;
+    height: 30px;
+    background-color: #f30655;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+.add-to-cart-button:hover{
+    transition: 0.2s ease-in-out;
+    background-color: #aa093f;
+}
