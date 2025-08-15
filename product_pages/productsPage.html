@@ -162,7 +162,7 @@
         function blackscreenout(){
             document.getElementById("main").style.opacity=1;
         }
-        renderProducts(tees);
+        renderProducts(JSON.parse(localStorage.getItem('product_type'))||tees);
     </script>
 </body>
 </html>
