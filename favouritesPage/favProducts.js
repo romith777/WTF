@@ -16,30 +16,29 @@ function renderProducts(products){
     if(!products || products.length === 0) return;
 
     let innerHtml = "";
-    products.forEach(product => {
-        innerHtml+=
-        `
-            <div class="browse-card">
-                <div class="browse-card-img">
-                    <a href="./productSinglePage.html" style="cursor: pointer;">
-                        <img src="${product.image}" alt="${product.name}">
-                    </a>
-                </div>
-                <div class="browse-card-information">
-                    <div class="browse-card-information-area">
-                        <div class="browse-card-information-area-text">
-                            <p class="browse-card-information-text" style="color: black;font-weight: 500;">${product.brandName}</p>
-                            <p class="browse-card-information-text">${product.about}</p>
-                            <p class="browse-card-information-text">Price : $<span class="browse-card-information-price">${formatCurrency(product.priceCents)}</span></p>
-                        </div>
-                        <div class="browse-card-information-area-wishlist">
-                            <img src="../assets/favourites-icon-unclick.png" class="browse-card-wishlist" data-product-id="${product.id}" data-is-checked="${localStorage.getItem(`${product.id}-fav-status`)||"unchecked"}" >
-                        </div>
+    products.forEach(element => {
+        element.forEach(product => {
+            innerHtml+=
+            `
+                <div class="browse-card">
+                    <div class="browse-card-img">
+                        <a href="./productSinglePage.html" style="cursor: pointer;">
+                            <img src="${product.image}" alt="${product.name}">
+                        </a>
                     </div>
-                    <button class="add-to-cart-button">Add To Cart</button>
+                    <div class="browse-card-information">
+                        <div class="browse-card-information-area">
+                            <div class="browse-card-information-area-text">
+                                <p class="browse-card-information-text" style="color: black;font-weight: 500;">${product.brandName}</p>
+                                <p class="browse-card-information-text">${product.about}</p>
+                                <p class="browse-card-information-text">Price : $<span class="browse-card-information-price">${formatCurrency(product.priceCents)}</span></p>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-button">Add To Cart</button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        });
     });
 
     document.querySelector(".js-favourites-body").innerHTML = innerHtml;
