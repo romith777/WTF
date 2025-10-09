@@ -90,7 +90,6 @@ const tees = [{
     keyword : ["tees","tshirts","tee","tshirt"]
 }
 ]
-
 const cargos = [
 {
     id : "cargo-1",
@@ -183,8 +182,98 @@ const cargos = [
     keyword : ["cargos","pants","trousers"]
 }
 ]
-
-const hoodies = []
+const hoodies = [
+{
+    id : "hoodie-1",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-2",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-3",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-4",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-5",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-6",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-7",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-8",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-9",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+},
+{
+    id : "hoodie-10",
+    name : "hoodies",
+    image : "../assets/hoodie.jpg",
+    about : "This is a Hoodie, yes it is",
+    brandName : "WTPrints",
+    priceCents : 4000,
+    keyword : ["hoodies","sweatshirts","hoodie"]
+}
+]
 const shirts = []
 const jeans = []
 const joggers = []

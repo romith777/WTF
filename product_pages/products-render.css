@@ -6,27 +6,29 @@
     transition: 0.2s ease-in-out;
 }
 .filter-section{
-    width: 30%;
+    position: relative;
+    height: 100%;
+    width: 450px;
 }
 .browsing-section{
     display: flex;
     flex-direction: row;
     width: 70%;
-    gap: 20px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: flex-start;
 }
 .browse-card{
     font-size: 18px;
     height: fit-content;
-    width: fit-content;
+    width: 30%;
     border-width: 1px;
     border-style: solid;
     border-color: rgb(200, 200, 200);
     color: rgb(104, 103, 103);
 }
 .browse-card img{
-    width: 330px;
+    width: 100%;
 }
 .browse-card-information{
     display: flex;

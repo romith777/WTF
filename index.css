@@ -46,6 +46,7 @@ p{
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-around;
+    text-align: center;
 }
 
 /* nav-logo */
@@ -61,12 +62,17 @@ p{
     color: #ee0653;
     align-items: center;
     align-self: center;
+    text-align: center;
     width: auto;
+    height: 100%;
 }
 .nav-txt{
     margin: 0;
     font-family: "Boldonse", system-ui;
     font-weight: 1000;
+    align-items: center;
+    align-self: center;
+    text-align: center;
 }
 .nav-icons{
     display: flex;
