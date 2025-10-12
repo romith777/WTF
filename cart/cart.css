@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.js-cart-body{
+    margin-top: 80px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cart-render{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.browse-card{
+    display: flex;
+    font-size: 18px;
+    height: max-content;
+    justify-content: space-around;
+    width: 100%;
+    color: rgb(104, 103, 103);
+    border: solid;
+    border-width: 2px;
+}
+.browse-card img{
+    width: 200px;
+}
+.browse-card-information{
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 0px 10px;
+    width: 100%;
+}
+.browse-card-information-price{
+    font-weight: 500;
+    color: black;
+}
+.browse-card-information-area{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.browse-card-information-area-text{
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.browse-card-information-area-wishlist{
+    width: 10%;
+}
+.browse-card-information-area-wishlist img{
+    width: 20px;
+}
+.browse-card-wishlist{
+    cursor: pointer;
+}
+
+.cart-update-button{
+    align-self: center;
+    width: 100px;
+    height: 30px;
+    background-color: #f30655;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+.cart-update-button:hover{
+    transition: 0.2s ease-in-out;
+    background-color: #aa093f;
+}
+
+.js-cart-quantity{
+    display: flex;
+    gap: 5px;
+}

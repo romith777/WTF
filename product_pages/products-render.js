@@ -2,6 +2,8 @@
 
 let type = JSON.parse(localStorage.getItem('product_type'));
 let favList = JSON.parse(localStorage.getItem("favList")) || {};
+let cart = JSON.parse(localStorage.getItem('cart')) || {};
+console.log(cart);
 
 document.addEventListener('DOMContentLoaded',()=>{
     function formatCurrency(priceCents){
@@ -9,6 +11,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
 
     let favCount = localStorage.getItem('favCount')||0;
+    let cartCount = localStorage.getItem('cartCount')||0;
     localStorage.setItem('favCount',localStorage.getItem('favCount')||0);
 
     function renderProducts(type){
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                 <img src="../assets/favourites-icon-unclick.png" class="browse-card-wishlist" data-product-id="${product.id}" data-is-checked="${localStorage.getItem(`${product.id}-fav-status`)||"unchecked"}" >
                             </div>
                         </div>
-                        <button class="add-to-cart-button">Add To Cart</button>
+                        <button class="add-to-cart-button js-cart-button" data-product-id=${product.id}>Add To Cart</button>
                     </div>
                 </div>
 
@@ -45,11 +48,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     renderProducts(type);
 
-    function updateFavCount(){
+    function updateFavCartCount(){
         document.querySelector(".js-favourites-count").innerHTML = localStorage.getItem('favCount') || 0;
+        document.querySelector(".js-cart-count").innerHTML = localStorage.getItem('cartCount') || 0;
     }
 
-    updateFavCount();
+    updateFavCartCount();
 
     function renderFavStatus(){
         document.querySelectorAll(".browse-card-wishlist").forEach(element=>{
@@ -79,7 +83,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 favCount++;
                 localStorage.setItem('favCount',favCount);
                 element.dataset.isChecked = "checked";
-                updateFavCount();
+                updateFavCartCount();
                 element.src="../assets/favourites-icon.png";
                 const result = type.filter(item => item.id === productId);
                 favList[productId] = result;
@@ -91,7 +95,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 localStorage.setItem(`${productId}-fav-status`,'unchecked');
                 favCount--;
                 localStorage.setItem('favCount',favCount);
-                updateFavCount();
+                updateFavCartCount();
                 element.src="../assets/favourites-icon-unclick.png";
                 if(favList[productId]){
                     delete favList[productId];
@@ -99,6 +103,29 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
                 console.log("removed");
             }
+        });
+    });
+
+    function saveCart(){
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
+    document.querySelectorAll('.js-cart-button').forEach(button=>{
+        button.addEventListener('click',()=>{
+            productId = button.dataset.productId;
+            cartCount++;
+            localStorage.setItem('cartCount',cartCount);
+            updateFavCartCount();
+            button.innerHTML = "Added";
+            setTimeout(()=>{button.innerHTML = "Add To Cart";},1000);
+            const result = type.filter(item => item.id === productId);
+            if(!cart[productId]){
+                cart[productId] = { ...result, quantity: 1 };
+            }
+            else{
+                cart[productId].quantity++;
+            }
+            saveCart();
+            console.log(cart);
         });
     });
 });
