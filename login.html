@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- LOGIN FORM: action -> /login, method -> POST, names added -->
-                <div id="signup-message" class="signup-message" style="display:none;">
+                <div id="login-message" class="signup-message" style="display:none;">
                     Signup successful! Please login.
                 </div>
 
@@ -78,6 +78,9 @@
                 </div>
 
                 <!-- SIGNUP FORM: action -> /signup, method -> POST, names added -->
+                <div id="signup-message" class="signup-message" style="display:none;">
+                    Signup successful! Please login.
+                </div>
                 <form id="signupForm" action="/signup" method="POST" class="input-holder" style="gap:20px;">
                   <input name="username" type="text" placeholder="Name" required>
                   <input name="email" type="email" placeholder="Email" required>
@@ -132,32 +135,38 @@
     });
 
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('signup') === 'success'){
-        document.getElementById('signup-message').style.display = 'block';
+
+    // common css
+    if(urlParams.get('signup') === 'exists' || urlParams.get('login') === 'nouser'){
+        let css = '';
+        if(urlParams.get('signup') === 'exists')    css = "signup-message";
+        else if(urlParams.get('login') === 'nouser') css = "login-message";
+        
+        document.getElementById(css).style.display = 'block';
+        document.getElementById(css).style.backgroundColor = 'red';
+        document.getElementById(css).style.color = 'black';
+        
         setTimeout(() => {
-            document.getElementById('signup-message').style.display = 'none';
-        }, 5000);
+            document.getElementById(css).style.display = 'none';
+        }, 2500);
+    }
+    
+    // for login
+    if(urlParams.get('login') === 'nouser'){
+        document.getElementById('login-message').innerHTML = 'User not found. Password or Username maybe incorrect.';
+    }
+
+    // for signup
+    if(urlParams.get('signup') === 'success'){
+        document.getElementById('login-message').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('login-message').style.display = 'none';
+        }, 2500);
     }
     else if(urlParams.get('signup') === 'exists'){
-        document.getElementById('signup-message').innerHTML = 'Username or Email already exists. Please choose a different username.';
-        document.getElementById('signup-message').style.display = 'block';
-        document.getElementById('signup-message').style.backgroundColor = 'red';
-        document.getElementById('signup-message').style.color = 'black';
-
-
-        setTimeout(() => {
-            document.getElementById('signup-message').style.display = 'none';
-        }, 5000);
-    }
-    else if(urlParams.get('login') === 'nouser'){
-        document.getElementById('signup-message').innerHTML = 'User not found. Password or Username maybe incorrect.';
-        document.getElementById('signup-message').style.display = 'block';
-        document.getElementById('signup-message').style.backgroundColor = 'red';
-        document.getElementById('signup-message').style.color = 'black';
-
-        setTimeout(() => {
-            document.getElementById('signup-message').style.display = 'none';
-        }, 5000);
+        document.querySelector(".login-box").style.display = 'none';
+        document.querySelector(".signup-box").style.display = 'block';
+        document.getElementById('signup-message').innerHTML = 'Username or Email already exists';
     }
 
   </script>
