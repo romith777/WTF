@@ -1,6 +1,5 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 let cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
-// console.log(cart);
 
 function formatCurrency(priceCents){
     return (priceCents/100).toFixed(2);
@@ -83,6 +82,102 @@ document.querySelectorAll('.remove-product-cart-button').forEach(button=>{
             parent.removeChild(child);
             delete cart[productId];
             saveCart();
+            // Save to backend immediately when item is removed
+            sendCartToBackend();
         }
     });
+});
+
+function getCart() {
+    console.log("Getting cart from localStorage");
+    return JSON.parse(localStorage.getItem('cart') || '{}');
+}
+
+function getUsername() {
+    console.log("Getting username from localStorage");
+    const wtUser = localStorage.getItem('wt_user');
+    if (!wtUser) return null;
+    try {
+        return JSON.parse(wtUser);
+    } catch (e) {
+        return wtUser;
+    }
+}
+
+function getCartArray(cartObj) {
+  const arr = [];
+  for (const key in cartObj) {
+    const item = cartObj[key];
+    const base = item[0] || item;
+    arr.push({
+      ...base,
+      quantity: item.quantity || 1
+    });
+  }
+  return arr;
+}
+
+function sendCartToBackend() {
+  const wt_user = getUsername();
+  
+  if (!wt_user) {
+    console.log("No user logged in, skipping cart save");
+    return false;
+  }
+
+  const username = typeof wt_user === 'string' ? wt_user : (wt_user.name || wt_user.username);
+  
+  if (!username) {
+    console.log("Username not found");
+    return false;
+  }
+
+  const cart = getCart();
+  const items = getCartArray(cart);
+  
+  console.log("Preparing to send cart:", { username, itemCount: items.length });
+
+  const payload = { username, items };
+  const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+  const url = 'http://127.0.0.1:3000/cart';
+
+  const ok = navigator.sendBeacon(url, blob);
+  console.log('sendBeacon returned', ok, 'for user:', username, 'with', items.length, 'items');
+  return ok;
+}
+
+// Method 1: Save on visibility change (when switching tabs)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    sendCartToBackend();
+  }
+});
+
+// Method 2: Save on beforeunload (when closing tab - attempt)
+window.addEventListener('beforeunload', (e) => {
+  sendCartToBackend();
+  // Note: Some browsers may block this, but we try anyway
+});
+
+// Method 3: Save on pagehide (more reliable for mobile/some browsers)
+window.addEventListener('pagehide', (e) => {
+  sendCartToBackend();
+});
+
+// Method 4: Periodic auto-save every 30 seconds
+setInterval(() => {
+  const wt_user = getUsername();
+  if (wt_user) {
+    console.log("Auto-saving cart...");
+    sendCartToBackend();
+  }
+}, 30000); // 30 seconds
+
+// Method 5: Save immediately when page loads (ensures cart is synced)
+window.addEventListener('load', () => {
+  const wt_user = getUsername();
+  if (wt_user) {
+    console.log("Initial cart sync on page load");
+    sendCartToBackend();
+  }
 });

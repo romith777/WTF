@@ -46,10 +46,10 @@
                     </a>
                     <!-- <section style="width: 1px;height: 100%;background-color: black;"> -->
                     </section>
-                    <a href="login.html">
+                    <a href="login.html" class="login-token">
                         <div>
                             <div>
-                                <p style="font-size: large;">Sign in/up</p>
+                                <p style="font-size: large;" class="login-token-info">Sign in/up</p>
                             </div>
                         </div>
                     </a>
@@ -493,6 +493,23 @@
             document.querySelector(".loader-wrapper").style.display = "none";
             document.querySelector(".filter-blur").classList.remove("filter-blur");
         });
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('login') === 'success'){
+            localStorage.setItem('login-token', true);
+            localStorage.setItem('wt_user', JSON.stringify({name: urlParams.get('wt_user'),email: urlParams.get('email')}));
+            console.log(JSON.parse(localStorage.getItem('wt_user')));
+            document.querySelector(".login-token").href = "./user/user.html";
+            document.querySelector(".login-token-info").innerHTML = "My Account";
+        }
+
+        if(localStorage.getItem('login-token') === 'true'){
+            document.querySelector(".login-token").href = "./user/user.html";
+            document.querySelector(".login-token-info").innerHTML = "My Account";
+        }
+        else{
+            document.querySelector(".login-token").href = "login.html";
+            document.querySelector(".login-token-info").innerHTML = "Sign in/up";
+        }
     </script>
 </body>
 </html>

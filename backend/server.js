@@ -1,92 +1,170 @@
+// server_fixed_debug.js
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const bodyParser = require('body-parser');
-const path = require('path');
+const cors = require('cors');
 
 const app = express();
-const PORT = 5500;
+const PORT = process.env.PORT || 3000;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://127.0.0.1:5500';
 
-// --- MongoDB Connection ---
-mongoose.connect('mongodb+srv://unknownme7707_db_user:y6Y5XGFVjBhQ7UFH@clusterone.oe9zc1s.mongodb.net/test', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.error("MongoDB Connection Error:", err));
+// --- Optional: try requiring Cart model safely ---
+let Cart = null;
+try {
+  Cart = require('./models/cartSchema');
+  console.log('Cart model loaded.');
+} catch (err) {
+  console.warn('Warning: could not load ./models/cartSchema. Cart DB ops will be skipped.');
+}
 
-// --- User Schema ---
+// --- MongoDB connection (non-fatal) ---
+async function connectDB() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    console.warn('MONGODB_URI not set. Skipping DB connection.');
+    return;
+  }
+  try {
+    await mongoose.connect(uri);
+    console.log('MongoDB connected.');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+  }
+}
+connectDB();
+
+// --- Basic user schema ---
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    email: { type: String, unique: true },
-    password: { type: String, required: true }
+  username: { type: String, required: true, unique: true },
+  email: { type: String, unique: true, sparse: true },
+  password: { type: String, required: true }
 });
-const User = mongoose.model('users', userSchema);
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 // --- Middleware ---
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// serve frontend files (HTML/CSS/assets) from parent folder
-app.use(express.static(path.join(__dirname, '..')));
+// CORS config
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Parse sendBeacon for /cart
+app.use('/cart', express.text({ type: '*/*' }));
 
 // --- Routes ---
 
-// Signup Route
-app.post('/signup', async (req, res) => {
-    const { username, email, password } = req.body;
-    try {
-        const existingUser = await User.findOne({ username }) || await User.findOne({ email });
-        if(existingUser){ 
-            res.redirect('/login.html?signup=exists');
-            return;
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = new User({ username, email, password: hashedPassword });
-        try {
-            const savedUser = await user.save();
-            console.log("User saved to DB:", savedUser);
-            try{
-                res.redirect('/login.html?signup=success');
-            } catch (err) {
-                console.error(err);
-                res.status(500).send('Error signing up');
-            }
-        } catch(err) {
-            console.error("Error saving user:", err);
-}
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server error");
-    }
-});
-
-// Login Route
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const user = await User.findOne({ username });
-        if(!user){
-            res.redirect('/login.html?login=nouser');
-            return;
-        }
-
-        const match = await bcrypt.compare(password, user.password);
-        if(!match) return res.status(400).send("Incorrect password");
-
-        res.send("Login successful!");
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server error");
-    }
-});
-
-// Default route (login page)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'login.html'));
+  res.json({ message: 'Server is running' });
 });
 
-// --- Start Server ---
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.get('/_health', (req, res) => {
+  res.json({ ok: true, env: process.env.NODE_ENV || 'dev' });
+});
+
+app.post('/signup', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ status: 'error', message: 'username and password required' });
+    }
+    
+    const existing = await User.findOne({ $or: [{ username }, { email }] });
+    if (existing) {
+      return res.json({ status: 'exists' });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+    const u = new User({ username, email, password: hashed });
+    await u.save();
+    res.json({ status: 'success' });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ status: 'error' });
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmail = emailRegex.test(username);
+    const user = isEmail 
+      ? await User.findOne({ email: username }) 
+      : await User.findOne({ username });
+    
+    if (!user) {
+      return res.json({ status: 'nouser' });
+    }
+    
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.json({ status: 'nouser' });
+    }
+    
+    res.json({ status: 'success', wt_user: user.username, email: user.email });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ status: 'error' });
+  }
+});
+
+app.post('/cart', async (req, res) => {
+  try {
+    let body = req.body;
+    
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        console.error('Failed to parse /cart body:', e.message);
+        return res.status(400).send('Bad request - invalid JSON');
+      }
+    }
+    
+    const { username, items } = body || {};
+    
+    if (!username) {
+      return res.status(400).send('username required');
+    }
+    if (!Array.isArray(items)) {
+      return res.status(400).send('items array required');
+    }
+
+    console.log('Cart received for user:', username, 'items:', items.length);
+
+    if (Cart && Cart.findOneAndUpdate) {
+      try {
+        await Cart.findOneAndUpdate(
+          { username }, 
+          { items, updatedAt: new Date() }, 
+          { upsert: true }
+        );
+        console.log('Cart saved to DB for:', username);
+      } catch (e) {
+        console.error('Cart DB save failed:', e.message);
+      }
+    } else {
+      console.log('Cart model not available. Items count:', items.length);
+    }
+    
+    res.status(200).send('cart saved');
+  } catch (err) {
+    console.error('Error in /cart:', err);
+    res.status(500).send('server error');
+  }
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
