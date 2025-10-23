@@ -2,24 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - WTPRINTS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="user.css">
 </head>
 <body>
   <header>
-    <h2 class="logo">WTPRINTS</h2>
+    <a href="../index.html"><div class="logo">WTPRINTS</div></a>
     <nav>
       <a href="../index.html">Home</a>
-      <a href="#" id="logoutBtn">Logout</a>
+      <a href="../cart/cart.html">Cart</a>
+      <a href="./orders.html">Orders</a>
     </nav>
   </header>
 
   <main>
-    <div class="profile-card">
-      <h1>👤 User Profile</h1>
-      <div class="profile-info">
-        <p><strong>Username:</strong> <span id="username">Loading...</span></p>
-        <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <h1 id="username">Loading...</h1>
+        <p>Welcome back!</p>
+      </div>
+
+      <div class="profile-body">
+        <div class="info-section">
+          <h2>Account Details</h2>
+          <div class="info-item">
+            <span class="info-label">Username</span>
+            <span class="info-value" id="username-display">Loading...</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value" id="email">Loading...</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Account Status</span>
+            <span class="info-value" style="color: #10ac84;">● Active</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-secondary" onclick="window.location.href='./orders.html'">
+            My Orders
+          </button>
+          <button class="btn btn-primary" onclick="window.location.href='../cart/cart.html'">
+            View Cart
+          </button>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">
+          Logout
+        </button>
       </div>
     </div>
   </main>

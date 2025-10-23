@@ -149,7 +149,7 @@ app.post('/cart', async (req, res) => {
           { items, updatedAt: new Date() }, 
           { upsert: true }
         );
-        console.log('Cart saved to DB for:', username);
+        console.log('Cart saved to DB for:', username, items);
       } catch (e) {
         console.error('Cart DB save failed:', e.message);
       }
@@ -161,6 +161,43 @@ app.post('/cart', async (req, res) => {
   } catch (err) {
     console.error('Error in /cart:', err);
     res.status(500).send('server error');
+  }
+});
+
+// Add this route after your POST /cart route
+
+app.get('/cart/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    console.log("Fetching cart for username:", username);
+    
+    if (!username) {
+      return res.status(400).json({ error: 'username required' });
+    }
+
+    // If Cart model is available, fetch from DB
+    if (Cart && Cart.findOne) {
+      try {
+        const cartData = await Cart.findOne({ username });
+        
+        if (!cartData || !cartData.items) {
+          console.log('No cart found for user:', username);
+          return res.json({ username, items: [] });
+        }
+        
+        console.log('Cart found for user:', username, 'items:', cartData.items.length);
+        return res.json({ username, items: cartData.items });
+      } catch (e) {
+        console.error('Cart DB fetch failed:', e.message);
+        return res.status(500).json({ error: 'Database error' });
+      }
+    } else {
+      console.log('Cart model not available');
+      return res.json({ username, items: [] });
+    }
+  } catch (err) {
+    console.error('Error in GET /cart:', err);
+    res.status(500).json({ error: 'server error' });
   }
 });
 
