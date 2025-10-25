@@ -1,108 +1,246 @@
 *{
     padding: 0;
     margin: 0;
-    /* background-color: black; */
+    box-sizing: border-box;
 }
+
 a{
     color: black;
     background-color: none;
     text-decoration: none;
     -webkit-user-drag: none;
-    cursor: default;
+    cursor: pointer;
 }
+
 a:checked{
     background-color: none;
     text-decoration: none;
 }
+
 h1{
     font-family: "League Spartan", sans-serif;
 }
 
+p{
+    font-family: "League Spartan", sans-serif;
+}
 
+/* Main Layout */
 .new-body-information{
     background-color: rgb(248, 248, 248);
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
-    /* justify-content: space-between; */
+    align-items: stretch;
 }
+
+/* Image Section */
 .collab-image-box{
-    height: 63vw;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
 }
+
 .collab-image-box img{
-    height: 63vw;
-    width: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
+
+/* Form Section */
 .information{
-    width: 71.5%;
-    padding-left: 150px;
-    padding-top: 20vh;
+    flex: 1;
+    padding: clamp(30px, 8vw, 150px);
+    padding-top: clamp(50px, 15vh, 150px);
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    max-width: 600px;
 }
+
+/* Input Styling */
 .input-holder{
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    width: 100%;
 }
+
 .input-holder input{
-    padding-left: 20px;
-    font-size: 20px;
-    width: 30vw;
-    height: 50px;
-    border-style: solid;
+    padding: 0 20px;
+    font-size: clamp(16px, 2vw, 18px);
+    width: 100%;
+    height: 55px;
+    border: 2px solid rgb(217, 217, 217);
     border-radius: 10px;
-    border-color: rgb(217, 217, 217);
+    font-family: "League Spartan", sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
 }
-.login-button,.signup-button{
-    height: 50px;
-    font-weight: 1000;
-    background-color: black;
+
+.input-holder input:focus{
+    outline: none;
+    border-color: #ee0652;
+    box-shadow: 0 0 0 3px rgba(238, 6, 82, 0.1);
+}
+
+.input-holder input::placeholder{
+    color: #999;
+}
+
+/* Buttons */
+.login-button, .signup-button{
+    height: 55px;
+    font-weight: 700;
+    background-color: #ee0652;
     color: white;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
-    width: 31.5vw;
-}
-.login-button:hover{
-    background-color: rgb(227, 226, 226);
-    color: black;
+    width: 100%;
+    font-size: 16px;
+    font-family: "League Spartan", sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(238, 6, 82, 0.2);
 }
 
+.login-button:hover, .signup-button:hover{
+    background-color: #c00545;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(238, 6, 82, 0.3);
+}
+
+.in-login-signup-button, .in-signup-login-button{
+    background-color: white;
+    color: #ee0652;
+    border: 2px solid #ee0652;
+    box-shadow: none;
+}
+
+.in-login-signup-button:hover, .in-signup-login-button:hover{
+    background-color: #ee0652;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(238, 6, 82, 0.2);
+}
+
+/* Animation */
 .login-signup-change{
     position: relative;
+    width: 100%;
 }
+
 .slider-change{
     width: 100%;
     height: 0%;
     z-index: 2;
     position: absolute;
-    background-color: black;
+    background-color: #ee0652;
     animation-name: none;
-    animation-duration: 1000ms;
+    animation-duration: 800ms;
+    border-radius: 10px;
 }
+
 .login-signup-content{
     z-index: 1;
     height: min-content;
-    position: absolute;
+    position: relative;
+    width: 100%;
 }
 
 @keyframes slideChange {
     0%  {height: 0%;}
     50% {height: 100%;}
-    100%    {height: 0%;}
+    100% {height: 0%;}
 }
 
-/* login.css */
+/* Messages */
 .signup-message {
     font-family: "League Spartan", sans-serif;
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
     padding: 15px;
-    border-radius: 5px;
+    border-radius: 8px;
     margin-bottom: 20px;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Divider Styling */
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .new-body-information{
+        flex-direction: column;
+    }
+    
+    .collab-image-box{
+        min-height: 40vh;
+        max-height: 40vh;
+    }
+    
+    .information{
+        max-width: 100%;
+        padding: 40px 30px;
+        padding-top: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .collab-image-box{
+        min-height: 30vh;
+        max-height: 30vh;
+    }
+    
+    .information{
+        padding: 30px 20px;
+        padding-top: 40px;
+    }
+    
+    .input-holder input,
+    .login-button,
+    .signup-button{
+        height: 50px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .collab-image-box{
+        min-height: 25vh;
+        max-height: 25vh;
+    }
+    
+    .information{
+        padding: 20px 15px;
+        padding-top: 30px;
+    }
+    
+    hr {
+        width: 30% !important;
+    }
 }

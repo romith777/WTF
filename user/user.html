@@ -6,7 +6,7 @@
   <title>My Account - WTPRINTS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="user.css">
 </head>
 <body>
@@ -20,43 +20,51 @@
   </header>
 
   <main>
-    <div class="profile-container">
-      <div class="profile-header">
-        <div class="profile-avatar">👤</div>
-        <h1 id="username">Loading...</h1>
-        <p>Welcome back!</p>
-      </div>
+    <div class="account-wrapper">
+      <aside class="sidebar">
+        <div class="avatar-wrap">
+          <div class="avatar-circle" id="avatar-initial">?</div>
+        </div>
+        <div class="sidebar-username" id="sidebar-username">Loading...</div>
+        <div class="avatar-divider"></div>
 
-      <div class="profile-body">
-        <div class="info-section">
-          <h2>Account Details</h2>
-          <div class="info-item">
-            <span class="info-label">Username</span>
-            <span class="info-value" id="username-display">Loading...</span>
+        <nav class="side-menu">
+          <a class="menu-item active" href="#">ACCOUNT</a>
+          <a class="menu-item" href="#">SETTINGS</a>
+          <a class="menu-item" href="#">PASSWORD</a>
+          <a class="menu-item" href="../cart/cart.html">CART</a>
+          <a class="menu-item" href="#">FAVOURITES</a>
+        </nav>
+        
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </aside>
+
+      <section class="account-main">
+        <h1 class="account-title">ACCOUNT</h1>
+        <p class="account-sub">Manage your personal information and preferences</p>
+
+        <div class="account-fields">
+          <div class="field">
+            <label class="field-label">Name</label>
+            <div class="field-value" id="display-name">Loading...</div>
           </div>
-          <div class="info-item">
-            <span class="info-label">Email</span>
-            <span class="info-value" id="email">Loading...</span>
+
+          <div class="field">
+            <label class="field-label">Email</label>
+            <div class="field-value" id="display-email">Loading...</div>
           </div>
-          <div class="info-item">
-            <span class="info-label">Account Status</span>
-            <span class="info-value" style="color: #10ac84;">● Active</span>
+
+          <div class="field">
+            <label class="field-label">Status</label>
+            <div class="status-badge">Active</div>
+          </div>
+
+          <div class="field">
+            <label class="field-label">Address</label>
+            <div class="field-value empty" id="display-address">Not set</div>
           </div>
         </div>
-
-        <div class="action-buttons">
-          <button class="btn btn-secondary" onclick="window.location.href='./orders.html'">
-            My Orders
-          </button>
-          <button class="btn btn-primary" onclick="window.location.href='../cart/cart.html'">
-            View Cart
-          </button>
-        </div>
-
-        <button class="logout-btn" id="logoutBtn">
-          Logout
-        </button>
-      </div>
+      </section>
     </div>
   </main>
 

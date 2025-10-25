@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="index.css">
     <link rel="icon" type="image/x-icon" href="assets/logo1.png">
     <script src="./data/products.js"></script>
-    <script src="index.js"></script>
 </head>
 <body>
     <div class="loader-wrapper">
@@ -44,8 +43,6 @@
                             </div>
                         </div>
                     </a>
-                    <!-- <section style="width: 1px;height: 100%;background-color: black;"> -->
-                    </section>
                     <a href="login.html" class="login-token">
                         <div>
                             <div>
@@ -53,21 +50,12 @@
                             </div>
                         </div>
                     </a>
-                    <!-- <section style="width: 1px;height: 100%;background-color: black;"> -->
-                    </section>
-                    <!-- <a href="#">
-                        <div>
-                            <div>
-                                <img src="assets/Xerox.png" alt="Xerox"><p>Xerox ?</p>
-                            </div>
-                        </div>
-                    </a> -->
                     <div class="nav-icons">
                         <a href="./cart/cart.html">
                             <div>
                                 <div>
                                     <img src="../assets/cart-icon.png" alt="cart">
-                                    <div style="position: fixed;background-color: #ee0652;width: 18px;height: 18px;border-radius: 50%;margin-left: 20px;margin-bottom: 20px;display: flex;justify-content: center;"><p><span class="js-cart-count" style="color: white;">0</span></p></div>
+                                    <div class="icon-badge"><p><span class="js-cart-count" style="color: white;">0</span></p></div>
                                 </div>
                             </div>
                         </a>
@@ -75,69 +63,60 @@
                             <div>
                                 <div>
                                     <img src="assets/favourites-icon-unclick.png" alt="favourites">
-                                    <div style="position: fixed;background-color: #ee0652;width: 18px;height: 18px;border-radius: 50%;margin-left: 20px;margin-bottom: 20px;display: flex;justify-content: center;"><p><span class="js-favourites-count" style="color: white;">0</span></p></div>
+                                    <div class="icon-badge"><p><span class="js-favourites-count" style="color: white;">0</span></p></div>
                                 </div>
                             </div>
                         </a>
                         <a href="#">
                             <div>
-                                <div index="three-dots" onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                                <div index="three-dots" onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                                     <img src="assets/three-dots.png" alt="Help" style="width: 25px;height: 25px;">
                                 </div>
                             </div>
                         </a>
                     </div>
+                    <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
             </div>
-            <nav class="nav-drop-down">
+            <nav class="nav-drop-down" id="navDropDown">
                 <ul>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./product_pages/productsPage.html" onclick="localStorage.setItem('product_type',JSON.stringify(tees))">
-                            <div>
-                                T-Shirts
-                            </div>
+                            <div>T-Shirts</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./product_pages/productsPage.html" onclick="localStorage.setItem('product_type',JSON.stringify(hoodies))">
-                            <div>
-                                Hoodies
-                            </div>
+                            <div>Hoodies</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./product_pages/productsPage.html" onclick="localStorage.setItem('product_type',JSON.stringify(cargos))">
-                            <div>
-                                Lower
-                            </div>
+                            <div>Lower</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./soon.html">
-                            <div>
-                                Bags
-                            </div>
+                            <div>Bags</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./soon.html">
-                            <div>
-                                Caps
-                            </div>
+                            <div>Caps</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./soon.html">
-                            <div>
-                                Visiting Cards
-                            </div>
+                            <div>Visiting Cards</div>
                         </a>
                     </li>
-                    <li onmouseover=blackscreen() on onmouseleave=blackscreenout()>
+                    <li onmouseover="blackscreen()" onmouseleave="blackscreenout()">
                         <a href="./soon.html">
-                            <div>
-                                Others
-                            </div>
+                            <div>Others</div>
                         </a>
                     </li>
                 </ul>
@@ -149,7 +128,7 @@
                 <div class="slide-wrapper">
                     <div class="slides">
                         <a href="#"><img src="assets/OversizeT.jpg" alt="OversizeT" id="slide-1" class="slide"></a>
-                        <a href="#"><img src="assets/Cargo.jpg" alt="Cagro" id="slide-2" class="slide"></a>
+                        <a href="#"><img src="assets/Cargo.jpg" alt="Cargo" id="slide-2" class="slide"></a>
                         <a href="#"><img src="assets/Joggers.jpg" alt="Joggers" id="slide-3" class="slide"></a>
                         <a href="#"><img src="assets/Tshirt.jpg" alt="Tshirt" id="slide-4" class="slide"></a>
                         <a href="#"><img src="assets/Jeans.jpg" alt="Jeans" id="slide-5" class="slide"></a>
@@ -162,26 +141,6 @@
                         <div id="slide5"></div>
                     </div>
                 </div>
-            </section>
-            <section>
-                <!-- <div class="selection">
-                    <div class="selection-text">
-                        <h1 style="align-self: center;">CHOOSE WHAT YOU WANT</h1>
-                        <div class="selection-text-division">
-                            <p>We have a wide range of products for you to choose from. You can either select from our readymade collection or you can customize your own cloths.</p>
-                        </div>
-                    </div>
-                    <div class="select-custom-readymade">
-                        <div class="custom">
-                            <h2>CUSTOM CLOTHS</h2>
-                            <a href="custom.html"><img src="assets/Custom-Shirt.jpeg" alt="Custom-Shirt"></a>
-                        </div>
-                        <div class="readymade">
-                            <h2>BRANDED CLOTHS</h2>
-                            <a href="#"><img src="assets/Branded-Shirt.jpeg" alt="Branded-Shirt"></a>
-                        </div>
-                    </div>
-                </div> -->
             </section>
             <section>
                 <h1 style="text-align: center;padding: 10px;">BROWSE TEES</h1>
@@ -389,26 +348,21 @@
                 </div>
                 <div style="padding-top: 7vh;padding-bottom: 5vh;text-align: center;"><h3 style="font-weight: 500;color: rgb(64, 64, 226);text-decoration: underline;"><a href="./product_pages/productsPage.html" style="cursor: pointer;color: rgb(64, 64, 226);" onclick="localStorage.setItem('product_type',JSON.stringify(hoodies))">Explore All</a></h3></div>
                 <div class="login-to-access">
-                    <div class="login-to-access-text">
-                        <h1>LOGIN TO SEE YOUR DESIGNS</h1>
-                    </div>
-                    <div class="login-to-access-text">
-                        <p>Login to access your account and to see your designs, favourites and cart. And many more Designs.</p>
-                    </div>
-                    <div class="login-to-access-text">
-                        <a href="login.html"><button class="login-to-access-button">LOGIN</button></a>
-                    </div>
+                <div class="login-to-access-text">
+                    <h1>LOGIN TO SEE YOUR DESIGNS</h1>
                 </div>
+                <div class="login-to-access-text">
+                    <p>Login to access your account and to see your designs, favourites and cart. And many more Designs.</p>
+                </div>
+                <div class="login-to-access-text">
+                    <a href="login.html" class="login-token">
+                        <button class="login-to-access-button">
+                            <span class="login-token-info">LOGIN</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
             </section>
-            <script>
-                function blackscreen(){
-                    document.getElementById("main").style.opacity=0.5;
-                }
-                function blackscreenout(){
-                    document.getElementById("main").style.opacity=1;
-                }
-                document.querySelector(".js-favourites-count").innerHTML = localStorage.getItem('favCount') || 0;
-            </script>
         </main>
         <footer class="footer">
             <div class="footer-content">
@@ -430,86 +384,65 @@
                             <li><a href="#">Bomber Jackets</a></li>
                         </ul>
                     </div>
-                <div>
-                    <h4>Women</h4>
-                    <ul>
-                        <li><a href="#">Oversized T-Shirts</a></li>
-                        <li><a href="#">T-Shirts</a></li>
-                        <li><a href="#">Joggers</a></li>
-                        <li><a href="#">Cargos</a></li>
-                        <li><a href="#">Caps</a></li>
-                        <li><a href="#">Jeans</a></li>
-                        <li><a href="#">Crop Tops</a></li>
-                        <li><a href="#">Co-ord Sets</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>About</h4>
-                    <ul>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Sustainability</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Affiliate Program</a></li>
-                    </ul>
-                </div>  
-                <div>
-                    <h4>Follow Us</h4>
-                    <ul>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">TikTok</a></li>
-                        <li><a href="#">YouTube</a></li>
-                    </ul>
-                </div>
-                <div class="footer-extra">
                     <div>
-                        <h4>Legal</h4>
+                        <h4>Women</h4>
                         <ul>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms & Conditions</a></li>
-                            <li><a href="#">Refund Policy</a></li>
+                            <li><a href="#">Oversized T-Shirts</a></li>
+                            <li><a href="#">T-Shirts</a></li>
+                            <li><a href="#">Joggers</a></li>
+                            <li><a href="#">Cargos</a></li>
+                            <li><a href="#">Caps</a></li>
+                            <li><a href="#">Jeans</a></li>
+                            <li><a href="#">Crop Tops</a></li>
+                            <li><a href="#">Co-ord Sets</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h4>Customer Service</h4>
+                        <h4>About</h4>
                         <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">FAQs</a></li>
-                            <li><a href="#">Shipping & Returns</a></li>
-                            <li><a href="#">Track Your Order</a></li>
-                            <li><a href="#">Size Guide</a></li>
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="#">Sustainability</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Affiliate Program</a></li>
+                        </ul>
+                    </div>  
+                    <div>
+                        <h4>Follow Us</h4>
+                        <ul>
+                            <li><a href="#">Instagram</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">TikTok</a></li>
+                            <li><a href="#">YouTube</a></li>
                         </ul>
                     </div>
-                </div>  
+                    <div class="footer-extra">
+                        <div>
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms & Conditions</a></li>
+                                <li><a href="#">Refund Policy</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Customer Service</h4>
+                            <ul>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">FAQs</a></li>
+                                <li><a href="#">Shipping & Returns</a></li>
+                                <li><a href="#">Track Your Order</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                            </ul>
+                        </div>
+                    </div>  
+                </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 WTPRINTS. All rights reserved.</p>
             </div>
         </footer>
     </div>
-    <script>
-        window.addEventListener("load", function() {
-            document.querySelector(".loader-wrapper").style.display = "none";
-            document.querySelector(".filter-blur").classList.remove("filter-blur");
-        });
-        const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('login') === 'success'){
-            localStorage.setItem('login-token', true);
-            localStorage.setItem('wt_user', JSON.stringify({name: urlParams.get('wt_user'),email: urlParams.get('email')}));
-            console.log(JSON.parse(localStorage.getItem('wt_user')));
-            document.querySelector(".login-token").href = "./user/user.html";
-            document.querySelector(".login-token-info").innerHTML = "My Account";
-        }
-
-        if(localStorage.getItem('login-token') === 'true'){
-            document.querySelector(".login-token").href = "./user/user.html";
-            document.querySelector(".login-token-info").innerHTML = "My Account";
-        }
-        else{
-            document.querySelector(".login-token").href = "login.html";
-            document.querySelector(".login-token-info").innerHTML = "Sign in/up";
-        }
-    </script>
+    <script src="index.js"></script>
 </body>
 </html>

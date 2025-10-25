@@ -140,12 +140,144 @@
             </nav>
         </header>
         <div class="browse-content" id="main">
-            <div class="filter-section">
-                
-            </div>
-            <div class="browsing-section">
-            </div>
+            <aside class="filter-section">
+                <div class="filter-sticky">
+                    <h2 class="filter-title">Filters</h2>
+                    
+                    <!-- Price Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Price Range</h3>
+                        <div class="price-filter">
+                            <input type="range" min="0" max="10000" value="10000" class="price-slider" id="priceSlider">
+                            <div class="price-display">
+                                <span>$0</span>
+                                <span id="maxPrice">$100.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Brands</h3>
+                        <div class="filter-options" id="brandFilters">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Size Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Size</h3>
+                        <div class="filter-options size-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="S" class="size-filter">
+                                <span>S</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="M" class="size-filter">
+                                <span>M</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="L" class="size-filter">
+                                <span>L</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="XL" class="size-filter">
+                                <span>XL</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="XXL" class="size-filter">
+                                <span>XXL</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Sort By</h3>
+                        <select class="sort-select" id="sortSelect">
+                            <option value="featured">Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </div>
+
+                    <button class="clear-filters-btn" id="clearFilters">Clear All Filters</button>
+                </div>
+            </aside>
+            
+            <main class="products-main">
+                <div class="products-header">
+                    <h1 class="products-title js-products-title">Our Collection</h1>
+                    <p class="products-count"><span id="productCount">0</span> Products</p>
+                </div>
+                <div class="browsing-section">
+                    <!-- Products will be rendered here -->
+                </div>
+
+                <!-- Related Products Section -->
+                <section class="related-products-section">
+                    <h2 class="section-title">You Might Also Like</h2>
+                    <div class="related-products-slider">
+                        <button class="slider-btn prev-btn" id="prevBtn">‹</button>
+                        <div class="related-products-container">
+                            <!-- Will be populated by JS -->
+                        </div>
+                        <button class="slider-btn next-btn" id="nextBtn">›</button>
+                    </div>
+                </section>
+            </main>
         </div>
+
+        <!-- Add footer before closing body tag -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2><span class="brand-highlight">WT</span>PRINTS</h2>
+                    <p>Your trusted fashion destination for bold, expressive, and stylish clothing. Stay unique. Stay printed.</p>
+                </div>
+                <div class="footer-links">
+                    <div>
+                        <h4>Men</h4>
+                        <ul>
+                            <li><a href="#">Oversized T-Shirts</a></li>
+                            <li><a href="#">T-Shirts</a></li>
+                            <li><a href="#">Joggers</a></li>
+                            <li><a href="#">Cargos</a></li>
+                            <li><a href="#">Caps</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Women</h4>
+                        <ul>
+                            <li><a href="#">Oversized T-Shirts</a></li>
+                            <li><a href="#">T-Shirts</a></li>
+                            <li><a href="#">Crop Tops</a></li>
+                            <li><a href="#">Co-ord Sets</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>About</h4>
+                        <ul>
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="#">Sustainability</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                    </div>  
+                    <div>
+                        <h4>Follow Us</h4>
+                        <ul>
+                            <li><a href="#">Instagram</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Twitter</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WTPRINTS. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
     <script src="../data/products.js"></script>
     <script src="./products-render.js"></script>

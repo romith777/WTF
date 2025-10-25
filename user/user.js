@@ -8,12 +8,12 @@ if(!user){
   console.log(user);
   
   // Update profile information
-  document.getElementById('username').textContent = user.name;
-  document.getElementById('username-display').textContent = user.name;
-  document.getElementById('email').textContent = user.email || 'N/A';
+  document.getElementById('sidebar-username').textContent = user.name;
+  document.getElementById('display-name').textContent = user.name;
+  document.getElementById('display-email').textContent = user.email || 'N/A';
   
   // Set avatar to first letter of username
-  const avatar = document.querySelector('.profile-avatar');
+  const avatar = document.getElementById('avatar-initial');
   if (user.name) {
     avatar.textContent = user.name.charAt(0).toUpperCase();
   }
