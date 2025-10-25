@@ -1,31 +1,244 @@
 *{
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "League Spartan", sans-serif;
+    background-color: #f8f8f8;
 }
 
 .js-favourites-body{
-    display: flex;
-    margin-top: 120px;
-    width: 100%;
-    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 140px;
+    padding: 20px clamp(15px, 3vw, 40px);
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: calc(100vh - 140px);
     transition: 0.2s ease-in-out;
 }
 
-.no-fav-div{
-    height: 100vh;
-    align-items: center;
-    align-self: center;
-    align-content: center;
+/* Page Title */
+.fav-page-title{
+    grid-column: 1 / -1;
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-family: 'League Spartan', sans-serif;
+    color: #333;
+    font-weight: 700;
 }
 
-.no-fav-div img{
-    width: 300px;
+/* Empty Favorites */
+.no-fav-container{
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 12px;
+    min-height: 400px;
 }
 
 .no-fav{
-    width: 100vw;
-    align-self: center;
-    align-items: center;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.no-fav img{
+    width: 120px;
+    height: 120px;
+    opacity: 0.3;
+}
+
+.no-fav h1{
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    font-family: "League Spartan", sans-serif;
+}
+
+.no-fav p{
+    font-size: 16px;
+    color: #666;
+    margin-top: 10px;
+    font-family: "League Spartan", sans-serif;
+}
+
+.shop-now-btn{
+    padding: 15px 40px;
+    background-color: #ee0652;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "League Spartan", sans-serif;
+    box-shadow: 0 4px 15px rgba(238, 6, 82, 0.3);
+    margin-top: 20px;
+}
+
+.shop-now-btn:hover{
+    background-color: #c00545;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(238, 6, 82, 0.4);
+}
+
+/* Product Cards */
+.browse-card{
+    font-size: 14px;
+    height: fit-content;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: white;
+    cursor: pointer;
+}
+
+.browse-card:hover{
+    box-shadow: 0 8px 25px rgba(238, 6, 82, 0.15);
+    border-color: #ee0652;
+}
+
+.browse-card-img{
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+}
+
+.browse-card-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.browse-card:hover .browse-card-img img{
+    transform: scale(1.05);
+}
+
+.browse-card-information{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+}
+
+.browse-card-information-area{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.browse-card-information-area-text{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.browse-card-information-text{
+    font-family: "League Spartan", sans-serif;
+    color: #666;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.browse-card-information-text:first-child{
+    color: #333;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.browse-card-information-price{
+    font-weight: 600;
+    color: #ee0652;
+    font-size: 18px;
+}
+
+/* Buttons */
+.add-to-cart-button{
+    width: 100%;
+    height: 40px;
+    background-color: #ee0652;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: "League Spartan", sans-serif;
+}
+
+.add-to-cart-button:hover{
+    background-color: #c00545;
+    transform: translateY(-2px);
+}
+
+.js-fav-remove{
+    background-color: white;
+    border: 2px solid #ee0652;
+    color: #ee0652;
+}
+
+.js-fav-remove:hover{
+    background-color: #ee0652;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .js-favourites-body{
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .js-favourites-body{
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 90px;
+        padding: 15px;
+    }
+    
+    .fav-page-title{
+        font-size: 24px;
+    }
+    
+    .browse-card-img{
+        height: 250px;
+    }
+    
+    .no-fav h1{
+        font-size: 24px;
+    }
+    
+    .no-fav img{
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .js-favourites-body{
+        grid-template-columns: 1fr;
+    }
+    
+    .browse-card-img{
+        height: 300px;
+    }
 }

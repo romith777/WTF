@@ -152,11 +152,11 @@ body{
 
 .quantity-btn:hover{
     background-color: #c00545;
-    transform: scale(1.05);
+    transform: none;
 }
 
 .quantity-btn:active{
-    transform: scale(0.95);
+    transform: none;
 }
 
 .quantity-input{
@@ -208,7 +208,7 @@ body{
 .remove-product-cart-button:hover{
     background-color: #ee0652;
     color: white;
-    transform: translateY(-2px);
+    transform: none;
 }
 
 /* Checkout Section */
@@ -283,12 +283,12 @@ body{
 
 .checkout-btn:hover{
     background-color: #c00545;
-    transform: translateY(-2px);
+    transform: none;
     box-shadow: 0 6px 20px rgba(238, 6, 82, 0.4);
 }
 
 .checkout-btn:active{
-    transform: translateY(0);
+    transform: none;
 }
 
 .continue-shopping{
@@ -367,7 +367,7 @@ body{
 
 .shop-now-btn:hover{
     background-color: #c00545;
-    transform: translateY(-2px);
+    transform: none;
     box-shadow: 0 6px 20px rgba(238, 6, 82, 0.4);
 }
 

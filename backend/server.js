@@ -201,6 +201,90 @@ app.get('/cart/:username', async (req, res) => {
   }
 });
 
+// Favorites Schema (add this near your User schema)
+const favoritesSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  items: { type: Array, default: [] },
+  updatedAt: { type: Date, default: Date.now }
+});
+const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favoritesSchema);
+
+// POST /favorites - Save favorites
+app.post('/favorites', async (req, res) => {
+  try {
+    let body = req.body;
+    
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        console.error('Failed to parse /favorites body:', e.message);
+        return res.status(400).send('Bad request - invalid JSON');
+      }
+    }
+    
+    const { username, items } = body || {};
+    
+    if (!username) {
+      return res.status(400).send('username required');
+    }
+    if (!Array.isArray(items)) {
+      return res.status(400).send('items array required');
+    }
+
+    console.log('Favorites received for user:', username, 'items:', items.length);
+
+    try {
+      await Favorites.findOneAndUpdate(
+        { username }, 
+        { items, updatedAt: new Date() }, 
+        { upsert: true }
+      );
+      console.log('Favorites saved to DB for:', username);
+    } catch (e) {
+      console.error('Favorites DB save failed:', e.message);
+    }
+    
+    res.status(200).send('favorites saved');
+  } catch (err) {
+    console.error('Error in /favorites:', err);
+    res.status(500).send('server error');
+  }
+});
+
+// GET /favorites/:username - Fetch favorites
+app.get('/favorites/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    console.log("Fetching favorites for username:", username);
+    
+    if (!username) {
+      return res.status(400).json({ error: 'username required' });
+    }
+
+    try {
+      const favData = await Favorites.findOne({ username });
+      
+      if (!favData || !favData.items) {
+        console.log('No favorites found for user:', username);
+        return res.json({ username, items: [] });
+      }
+      
+      console.log('Favorites found for user:', username, 'items:', favData.items.length);
+      return res.json({ username, items: favData.items });
+    } catch (e) {
+      console.error('Favorites DB fetch failed:', e.message);
+      return res.status(500).json({ error: 'Database error' });
+    }
+  } catch (err) {
+    console.error('Error in GET /favorites:', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+// Add text parsing middleware for favorites
+app.use('/favorites', express.text({ type: '*/*' }));
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
