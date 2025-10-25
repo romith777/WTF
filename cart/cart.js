@@ -4,51 +4,72 @@ console.log(logintoken);
 let cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
+// Normalize cart structure - fix the quantity issue
+Object.keys(cart).forEach(productId => {
+    const item = cart[productId];
+    
+    // If it's in old array format, fix it
+    if (Array.isArray(item)) {
+        cart[productId] = { ...item[0], quantity: item.quantity || 1 };
+    }
+    
+    // Ensure quantity exists and is valid
+    if (!cart[productId].quantity || cart[productId].quantity < 1) {
+        cart[productId].quantity = 1;
+    }
+});
+
+// Save the corrected cart back
+localStorage.setItem('cart', JSON.stringify(cart));
+
 function formatCurrency(priceCents){
     return (priceCents/100).toFixed(2);
 }
 
-// Helper function to calculate total quantity
+// Calculate total items in cart
 function calculateTotalQuantity(cartObj) {
     let total = 0;
     for (const key in cartObj) {
-        const item = cartObj[key];
-        // Handle both old array format and new object format
-        total += item.quantity || 1;
+        total += cartObj[key].quantity || 1;
     }
     return total;
 }
 
-// Helper function to update cart count
+// Calculate total price
+function calculateTotalPrice(cartObj) {
+    let total = 0;
+    for (const key in cartObj) {
+        const item = cartObj[key];
+        total += (item.priceCents || 0) * (item.quantity || 1);
+    }
+    return total;
+}
+
+// Update cart count
 function updateCartCount() {
     cartCount = calculateTotalQuantity(cart);
     localStorage.setItem('cartCount', cartCount);
+    
+    // Update the display
+    const countElement = document.querySelector('.js-favourites-count');
+    if (countElement) {
+        countElement.textContent = localStorage.getItem('favCount') || 0;
+    }
 }
 
-// Helper function to normalize cart structure from old format to new format
-function normalizeCartItem(item) {
-    // If it's already in new format (has product property)
-    if (item.product && item.quantity) {
-        return item;
-    }
+// Update checkout summary
+function updateCheckoutSummary() {
+    const itemCount = calculateTotalQuantity(cart);
+    const subtotal = calculateTotalPrice(cart);
+    const shipping = itemCount > 0 ? 500 : 0; // $5 flat shipping
+    const tax = Math.round(subtotal * 0.1); // 10% tax
+    const total = subtotal + shipping + tax;
     
-    // If it's in old array format: [{...productData}] with quantity property on array
-    if (Array.isArray(item) && item[0]) {
-        return {
-            product: item[0],
-            quantity: item.quantity || 1
-        };
-    }
-    
-    // If it's just a product object without wrapper
-    if (item.id) {
-        return {
-            product: item,
-            quantity: 1
-        };
-    }
-    
-    return null;
+    document.getElementById('itemCount').textContent = itemCount;
+    document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('shipping').textContent = formatCurrency(shipping);
+    document.getElementById('tax').textContent = formatCurrency(tax);
+    document.getElementById('total').textContent = formatCurrency(total);
 }
 
 function renderProducts(cartObj){
@@ -56,58 +77,50 @@ function renderProducts(cartObj){
     
     if(!cartObj || Object.keys(cartObj).length === 0){
         console.log("No products found");
-        innerHtml+=`
-            <div class="no-fav-div">
-                <div class="no-fav">
-                    <img src="../assets/cart-icon.png" alt="hrt-img">
+        innerHtml = `
+            <div class="no-cart-div">
+                <div class="no-cart-icon">
+                    <img src="../assets/cart-icon.png" alt="cart-img">
                 </div>
-                <div class="no-fav">
-                    <h1>Add Products to Display</h1>
+                <div class="no-cart-text">
+                    <h1>Your Cart is Empty</h1>
+                    <p>Add some products to get started!</p>
+                    <a href="../index.html"><button class="shop-now-btn">Shop Now</button></a>
                 </div>
             </div>
-        `
-        document.getElementById('main').innerHTML = innerHtml;
+        `;
+        document.querySelector('.cart-render').innerHTML = innerHtml;
+        updateCheckoutSummary();
         return;
     }
 
     for (const productId in cartObj) {
-        const item = normalizeCartItem(cartObj[productId]);
-        
-        if (!item || !item.product) {
-            console.error('Invalid cart item:', cartObj[productId]);
-            continue;
-        }
-        
-        const product = item.product;
-        const quantity = item.quantity;
+        const product = cartObj[productId];
+        const quantity = product.quantity || 1;
         
         console.log('Rendering:', { productId, product, quantity });
         
-        innerHtml+=
-        `
+        innerHtml += `
             <div class="browse-card js-card-${product.id}">
                 <div class="browse-card-img">
-                    <a href="./productSinglePage.html" style="cursor: pointer;">
-                        <img src="${product.image}" alt="${product.name}">
-                    </a>
+                    <img src="${product.image}" alt="${product.name}">
                 </div>
                 <div class="browse-card-information">
-                    <div>
-                        <div class="browse-card-information-area">
-                            <div class="browse-card-information-area-text">
-                                <p class="browse-card-information-text" style="color: black;font-weight: 500;">${product.brandName}</p>
-                                <p class="browse-card-information-text">${product.about}</p>
-                                <p class="browse-card-information-text">Price : $<span class="browse-card-information-price">${formatCurrency(product.priceCents)}</span></p>
-                            </div>
+                    <div class="browse-card-details">
+                        <div class="browse-card-information-area-text">
+                            <p class="browse-card-brand">${product.brandName}</p>
+                            <p class="browse-card-about">${product.about}</p>
+                            <p class="browse-card-price">$${formatCurrency(product.priceCents)}</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 20px;flex-direction: column">
-                        <div class="js-cart-quantity">
-                            <p>Quantity: <b>${quantity}</b></p>
+                    <div class="browse-card-actions">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn minus-btn" data-product-id="${product.id}">−</button>
+                            <input type="number" class="quantity-input" value="${quantity}" min="1" data-product-id="${product.id}" readonly>
+                            <button class="quantity-btn plus-btn" data-product-id="${product.id}">+</button>
                         </div>
-                        <div>
-                            <button class="js-cart-quantity-update cart-update-button"> Update </button>
-                            <button class="remove-product-cart-button cart-update-button" data-product-id="${product.id}">Remove</button>
+                        <div class="cart-buttons">
+                            <button class="remove-product-cart-button" data-product-id="${product.id}">Remove</button>
                         </div>
                     </div>
                 </div>
@@ -118,29 +131,49 @@ function renderProducts(cartObj){
     document.querySelector(".cart-render").innerHTML = innerHtml;
     
     // Re-attach event listeners after rendering
+    attachQuantityListeners();
     attachRemoveListeners();
+    updateCheckoutSummary();
+}
+
+function attachQuantityListeners() {
+    // Plus buttons
+    document.querySelectorAll('.plus-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.dataset.productId;
+            if (cart[productId]) {
+                cart[productId].quantity++;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                renderProducts(cart);
+            }
+        });
+    });
+    
+    // Minus buttons
+    document.querySelectorAll('.minus-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.dataset.productId;
+            if (cart[productId] && cart[productId].quantity > 1) {
+                cart[productId].quantity--;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                renderProducts(cart);
+            }
+        });
+    });
 }
 
 function attachRemoveListeners() {
-    document.querySelectorAll('.remove-product-cart-button').forEach(button=>{
-        button.addEventListener('click',()=>{
+    document.querySelectorAll('.remove-product-cart-button').forEach(button => {
+        button.addEventListener('click', () => {
             const productId = button.dataset.productId;
             
-            if(cart[productId]){
-                const parent = document.querySelector('.cart-render');
-                const child = document.querySelector(`.js-card-${productId}`);
-                if (parent && child) {
-                    parent.removeChild(child);
-                }
+            if (cart[productId]) {
                 delete cart[productId];
-                localStorage.setItem('cart',JSON.stringify(cart));
-                
-                // Update cart count based on total quantity
+                localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartCount();
-                
-                saveCart();
-                // Save to backend immediately when item is removed
-                sendCartToBackend();
+                renderProducts(cart);
             }
         });
     });
@@ -167,223 +200,182 @@ function getUsername() {
     }
 }
 
-function getCartArray(cartObj) {
-  const arr = [];
-  for (const key in cartObj) {
-    const item = normalizeCartItem(cartObj[key]);
-    if (item && item.product) {
-        arr.push({
-            ...item.product,
-            quantity: item.quantity
+// Checkout button
+document.addEventListener('DOMContentLoaded', () => {
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            if (Object.keys(cart).length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Here you can add your checkout logic
+            alert('Proceeding to checkout... (Add your checkout logic here)');
         });
     }
-  }
-  return arr;
+});
+
+// Initialize cart display
+async function initializeCart() {
+    const username = getUsername();
+    
+    if (username) {
+        console.log("User logged in:", username);
+        console.log("Fetching cart from backend...");
+        
+        // Fetch from backend
+        const backendItems = await fetchCartFromBackend();
+        
+        if (backendItems && backendItems.length > 0) {
+            console.log("Backend cart loaded:", backendItems);
+            mergeCartData(backendItems);
+        } else {
+            console.log("No backend cart, using local");
+            cart = getCart();
+            updateCartCount();
+            renderProducts(cart);
+        }
+    } else {
+        console.log("No user logged in, using local cart");
+        cart = getCart();
+        updateCartCount();
+        renderProducts(cart);
+    }
 }
 
-function sendCartToBackend() {
-  const username = getUsername();
-  
-  if (!username) {
-    console.log("No user logged in, skipping cart save");
-    return false;
-  }
-  
-  const cart = getCart();
-  const items = getCartArray(cart);
-  
-  console.log("Preparing to send cart:", { username, itemCount: items.length });
-
-  const payload = { username, items };
-  const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-  const url = 'http://127.0.0.1:3000/cart';
-
-  const ok = navigator.sendBeacon(url, blob);
-  console.log('sendBeacon returned', ok, 'for user:', username, 'with', items.length, 'items');
-  return ok;
-}
+// Call initialize on load
+window.addEventListener('load', initializeCart);
 
 async function fetchCartFromBackend() {
-  const username = getUsername();
-  
-  if (!username) {
-    console.log("No user logged in, can't fetch cart");
-    return null;
-  }
-
-  try {
-    const url = `http://127.0.0.1:3000/cart/${username}`;
-    console.log("Fetching from:", url);
+    const username = getUsername();
     
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      console.error('Failed to fetch cart:', response.status);
-      return null;
+    if (!username) {
+        console.log("No user logged in, can't fetch cart");
+        return null;
     }
 
-    const data = await response.json();
-    console.log('Cart fetched from backend:', data);
-    return data.items || [];
-  } catch (error) {
-    console.error('Error fetching cart:', error);
-    return null;
-  }
+    try {
+        const url = `http://127.0.0.1:3000/cart/${username}`;
+        console.log("Fetching from:", url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch cart:', response.status);
+            return null;
+        }
+
+        const data = await response.json();
+        console.log('Cart fetched from backend:', data);
+        return data.items || [];
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+        return null;
+    }
 }
 
 function mergeCartData(backendItems) {
-  console.log('Merging cart data. Backend items:', backendItems);
-  
-  // Get current local cart
-  const localCart = getCart();
-  console.log('Local cart before merge:', localCart);
-  
-  if (!backendItems || backendItems.length === 0) {
-    console.log('No backend cart data, using local cart');
-    cart = localCart;
+    console.log('Merging cart data. Backend items:', backendItems);
+    
+    const localCart = getCart();
+    console.log('Local cart before merge:', localCart);
+    
+    if (!backendItems || backendItems.length === 0) {
+        console.log('No backend cart data, using local cart');
+        cart = localCart;
+        updateCartCount();
+        renderProducts(cart);
+        return;
+    }
+
+    // Start with empty cart
+    cart = {};
+    
+    // Add backend items first
+    backendItems.forEach(item => {
+        if (item.id) {
+            cart[item.id] = {
+                id: item.id,
+                name: item.name,
+                image: item.image,
+                brandName: item.brandName,
+                about: item.about,
+                priceCents: item.priceCents,
+                keyword: item.keyword,
+                quantity: item.quantity || 1
+            };
+        }
+    });
+    
+    // Merge local items (local takes priority if exists)
+    Object.keys(localCart).forEach(productId => {
+        const localItem = localCart[productId];
+        if (!cart[productId]) {
+            cart[productId] = localItem;
+        }
+    });
+
+    console.log('Cart after merge:', cart);
+
+    // Save merged cart
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     renderProducts(cart);
-    return;
-  }
-
-  // Start with local cart as base (normalize it first)
-  cart = {};
-  for (const key in localCart) {
-    const normalized = normalizeCartItem(localCart[key]);
-    if (normalized) {
-      cart[key] = normalized;
+    
+    // Sync back to backend
+    if (Object.keys(localCart).length > 0) {
+        console.log('Syncing merged cart back to backend');
+        sendCartToBackend();
     }
-  }
-  
-  // Merge backend items (use new object format)
-  backendItems.forEach(item => {
-    if (item.id) {
-      // If item exists in local cart, keep the local version (it's more recent)
-      if (!cart[item.id]) {
-        // Only add from backend if not in local cart
-        cart[item.id] = {
-          product: {
+}
+
+function sendCartToBackend() {
+    const username = getUsername();
+    
+    if (!username) {
+        console.log("No user logged in, skipping cart save");
+        return false;
+    }
+    
+    const cartItems = [];
+    Object.keys(cart).forEach(productId => {
+        const item = cart[productId];
+        cartItems.push({
             id: item.id,
             name: item.name,
             image: item.image,
             brandName: item.brandName,
             about: item.about,
             priceCents: item.priceCents,
-            keyword: item.keyword
-          },
-          quantity: item.quantity || 1
-        };
-      }
-    }
-  });
-
-  console.log('Cart after merge:', cart);
-
-  // Save merged cart to localStorage
-  localStorage.setItem('cart', JSON.stringify(cart));
-  
-  // Update cart count based on total quantity
-  updateCartCount();
-  
-  console.log('Cart merged. Total items:', cartCount);
-  
-  // Re-render products with merged data
-  renderProducts(cart);
-  
-  // Sync back to backend if we merged new local items
-  if (Object.keys(localCart).length > 0) {
-    console.log('Syncing merged cart back to backend');
-    sendCartToBackend();
-  }
-}
-
-async function refreshCartDisplay() {
-  console.log('Refreshing cart display...');
-  
-  // Reload cart from localStorage
-  cart = getCart();
-  
-  // Update cart count based on total quantity
-  updateCartCount();
-  
-  console.log('Current cart:', cart);
-  console.log('Cart count:', cartCount);
-  
-  // Re-render
-  renderProducts(cart);
-}
-
-async function initializeCart() {
-  const username = getUsername();
-  
-  if (username) {
-    console.log("User logged in:", username);
-    console.log("Fetching cart from backend on page load");
+            keyword: item.keyword,
+            quantity: item.quantity || 1
+        });
+    });
     
-    const backendItems = await fetchCartFromBackend();
-    mergeCartData(backendItems);
-  } else {
-    console.log("No user logged in");
-    // Load from local storage only
-    cart = getCart();
-    updateCartCount();
-    renderProducts(cart);
-  }
+    console.log("Sending cart to backend:", { username, itemCount: cartItems.length });
+
+    const payload = { username, items: cartItems };
+    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    const url = 'http://127.0.0.1:3000/cart';
+
+    const ok = navigator.sendBeacon(url, blob);
+    console.log('sendBeacon returned', ok);
+    return ok;
 }
 
-// Listen for localStorage changes from other tabs/pages
+// Listen for storage changes
 window.addEventListener('storage', (e) => {
-  if (e.key === 'cart' || e.key === 'cartCount') {
-    console.log('Cart updated in another tab/page, refreshing...');
-    refreshCartDisplay();
-  }
+    if (e.key === 'cart' || e.key === 'cartCount') {
+        console.log('Cart updated in another tab/page, refreshing...');
+        cart = getCart();
+        updateCartCount();
+        renderProducts(cart);
+    }
 });
 
-// Listen for focus event - refresh cart when user returns to this tab
-window.addEventListener('focus', () => {
-  console.log('Tab focused, refreshing cart display...');
-  refreshCartDisplay();
-});
-
-// Listen for visibility change
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    console.log('Page became visible, refreshing cart...');
-    refreshCartDisplay();
-  } else {
-    // Save when hiding
-    sendCartToBackend();
-  }
-});
-
-// Refresh cart every 30 seconds to catch any updates
-setInterval(() => {
-  refreshCartDisplay();
-}, 30000);
-
-// Call initialize on load
-window.addEventListener('load', initializeCart);
-
-// Save on beforeunload
-window.addEventListener('beforeunload', (e) => {
-  sendCartToBackend();
-});
-
-// Save on pagehide
-window.addEventListener('pagehide', (e) => {
-  sendCartToBackend();
-});
-
-// Periodic backend save every 5 minutes
-setInterval(() => {
-  const username = getUsername();
-  if (username) {
-    console.log("Auto-saving cart to backend...");
-    sendCartToBackend();
-  }
-}, 300000);

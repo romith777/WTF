@@ -259,7 +259,7 @@
 }
 
 .browse-card:hover .browse-card-img img{
-    transform: scale(1.05);
+    transform: none;
 }
 
 .browse-card-information{
@@ -313,7 +313,7 @@
 }
 
 .browse-card-wishlist:hover{
-    transform: scale(1.2);
+    transform: none;
 }
 
 /* Related Products Section */

@@ -4,6 +4,20 @@ let type = JSON.parse(localStorage.getItem('product_type'));
 let favList = JSON.parse(localStorage.getItem("favList")) || {};
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
+// Normalize cart data structure
+Object.keys(cart).forEach(productId => {
+    // If the cart item is an array (old bug), fix it
+    if (Array.isArray(cart[productId])) {
+        cart[productId] = { ...cart[productId][0], quantity: 1 };
+    }
+    // Ensure quantity exists
+    if (!cart[productId].quantity) {
+        cart[productId].quantity = 1;
+    }
+});
+
+localStorage.setItem('cart', JSON.stringify(cart));
+
 // Get all product types for related products
 let allProductTypes = [tees, cargos, hoodies];
 let otherProducts = [];
@@ -266,25 +280,93 @@ document.addEventListener('DOMContentLoaded',()=>{
                 e.preventDefault();
                 e.stopPropagation();
                 let productId = button.dataset.productId;
-                cartCount++;
-                localStorage.setItem('cartCount',cartCount);
-                updateFavCartCount();
-                button.innerHTML = "Added ✓";
-                button.style.backgroundColor = "#4CAF50";
-                setTimeout(()=>{
-                    button.innerHTML = "Add To Cart";
-                    button.style.backgroundColor = "";
-                },1500);
-                const result = type.filter(item => item.id === productId);
+                
+                const result = type.find(item => item.id === productId);
+                
                 if(!cart[productId]){
-                    cart[productId] = { ...result[0], quantity: 1 };
+                    cart[productId] = { ...result, quantity: 1 };
                 }
                 else{
                     cart[productId].quantity++;
                 }
+                
+                cartCount++;
+                localStorage.setItem('cartCount',cartCount);
+                updateFavCartCount();
                 saveCart();
+                
+                button.innerHTML = "Added";
+                setTimeout(()=>{
+                    button.innerHTML = "Add To Cart";
+                    button.style.backgroundColor = "";
+                },1500);
             });
         });
     }
+    // Login token handling
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('login') === 'success'){
+        localStorage.setItem('login-token', true);
+        localStorage.setItem('wt_user', JSON.stringify({
+            name: urlParams.get('wt_user'),
+            email: urlParams.get('email')
+        }));
+        console.log(JSON.parse(localStorage.getItem('wt_user')));
+        document.querySelector(".login-token").href = "../user/user.html";
+        document.querySelector(".login-token-info").innerHTML = "My Account";
+    }
 
+    if(localStorage.getItem('login-token') === 'true'){
+        document.querySelector(".login-token").href = "../user/user.html";
+        document.querySelector(".login-token-info").innerHTML = "My Account";
+    }
+    else{
+        document.querySelector(".login-token").href = "login.html";
+        document.querySelector(".login-token-info").innerHTML = "Sign in/up";
+    }
+    // Related products slider
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const container = document.querySelector('.related-products-container');
+    
+    prevBtn.addEventListener('click', () => {
+        container.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        container.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+
+    // Auto-hide slider buttons based on scroll position
+    function updateSliderButtons() {
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        
+        if (container.scrollLeft <= 0) {
+            prevBtn.style.opacity = '0.3';
+            prevBtn.style.pointerEvents = 'none';
+        } else {
+            prevBtn.style.opacity = '1';
+            prevBtn.style.pointerEvents = 'auto';
+        }
+        
+        if (container.scrollLeft >= maxScroll - 5) {
+            nextBtn.style.opacity = '0.3';
+            nextBtn.style.pointerEvents = 'none';
+        } else {
+            nextBtn.style.opacity = '1';
+            nextBtn.style.pointerEvents = 'auto';
+        }
+    }
+
+    container.addEventListener('scroll', updateSliderButtons);
+    updateSliderButtons();
+
+    // Black screen effect for navigation hover
+    window.blackscreen = function(){
+        document.getElementById("main").style.opacity = 0.5;
+    }
+    
+    window.blackscreenout = function(){
+        document.getElementById("main").style.opacity = 1;
+    }
 });

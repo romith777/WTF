@@ -36,7 +36,7 @@
                     </div>
                 </a>
                 
-                <a href="../login.html">
+                <a href="../login.html" class="login-token">
                     <div>
                         <div>
                             <p style="font-size: large;">Sign in/up</p>
@@ -72,26 +72,74 @@
         </div>
     </header>
     <div class="new-body js-cart-body filter-blur" id="main">
-        <div class="cart-body" style="width: 70%;">
+        <div class="cart-body">
+            <h1 class="cart-page-title">Shopping Cart</h1>
             <div class="cart-render">
-
+                <!-- Products will be rendered here -->
             </div>
         </div>
-        <div class="cart-checkout" style="width: 30%;">
-            v
-        </div>
+        <aside class="cart-checkout">
+            <div class="checkout-sticky">
+                <h2 class="checkout-title">Order Summary</h2>
+                <div class="checkout-item">
+                    <span>Items (<span id="itemCount">0</span>):</span>
+                    <span>$<span id="subtotal">0.00</span></span>
+                </div>
+                <div class="checkout-item">
+                    <span>Shipping:</span>
+                    <span>$<span id="shipping">0.00</span></span>
+                </div>
+                <div class="checkout-item">
+                    <span>Tax (10%):</span>
+                    <span>$<span id="tax">0.00</span></span>
+                </div>
+                <div class="checkout-item total">
+                    <span>Total:</span>
+                    <span>$<span id="total">0.00</span></span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+                <a href="../index.html" class="continue-shopping">Continue Shopping</a>
+            </div>
+        </aside>
     </div>
     <script src="./cart.js"></script>
     <script>
         window.addEventListener("load", function() {
             document.querySelector(".loader-wrapper").style.display = "none";
             document.querySelector(".filter-blur").classList.remove("filter-blur");
+            
+            // Update login status
+            updateLoginStatus();
         });
+        
         function blackscreen(){
             document.getElementById("main").style.opacity=0.5;
         }
+        
         function blackscreenout(){
             document.getElementById("main").style.opacity=1;
+        }
+        
+        function updateLoginStatus(){
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('login') === 'success'){
+                localStorage.setItem('login-token', true);
+                localStorage.setItem('wt_user', JSON.stringify({
+                    name: urlParams.get('wt_user'),
+                    email: urlParams.get('email')
+                }));
+            }
+
+            const loginLinks = document.querySelectorAll('a[href="../login.html"]');
+            if(localStorage.getItem('login-token') === 'true'){
+                loginLinks.forEach(link => {
+                    const pTag = link.querySelector('p');
+                    if(pTag && pTag.textContent.trim() === 'Sign in/up'){
+                        link.href = "../user/user.html";
+                        pTag.textContent = "My Account";
+                    }
+                });
+            }
         }
     </script>
 </body>

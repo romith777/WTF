@@ -644,7 +644,7 @@ section h1{
 
 .add-to-cart-button:hover{
     background-color: #c00545;
-    transform: translateY(-2px);
+    transform: none;
 }
 
 /* Responsive Design */
