@@ -1,5 +1,6 @@
 // Import statement commented out - now using global variables from products.js
 // import {tees,cargos,hoodies} from '../data/products.js';
+const API_URL = window.location.origin;
 
 let type = JSON.parse(localStorage.getItem('product_type'));
 let favList = JSON.parse(localStorage.getItem("favList")) || {};

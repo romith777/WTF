@@ -1,3 +1,5 @@
+const API_URL = window.location.origin;
+
 document.addEventListener('DOMContentLoaded', ()=>{
     window.addEventListener("load", function() {
         document.querySelector(".loader-wrapper").style.display = "none";

@@ -1,3 +1,5 @@
+const API_URL = window.location.origin;
+
 let logintoken = localStorage.getItem('login-token');
 let username;
 let cartCount = parseInt(localStorage.getItem('cartCount')) || 0;

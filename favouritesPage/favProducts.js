@@ -1,3 +1,5 @@
+const API_URL = window.location.origin;
+
 let favList = JSON.parse(localStorage.getItem('favList')) || {};
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 

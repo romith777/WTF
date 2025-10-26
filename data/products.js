@@ -1,4 +1,6 @@
 // Initialize empty arrays
+const API_URL = window.location.origin;
+
 let tees = [];
 let hoodies = [];
 let cargos = [];

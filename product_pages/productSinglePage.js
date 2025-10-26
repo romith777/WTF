@@ -1,3 +1,5 @@
+const API_URL = window.location.origin;
+
 let currentProduct = null;
 let selectedSize = 'M';
 let quantity = 1;
