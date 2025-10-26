@@ -1,4 +1,4 @@
-let API_URI = window.location.origin;
+const API_URI = window.location.origin;
 
 let logintoken = localStorage.getItem('login-token');
 let username;

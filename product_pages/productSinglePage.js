@@ -1,4 +1,4 @@
-let API_URI = window.location.origin;
+// let API_URI = window.location.origin;
 
 let currentProduct = null;
 let selectedSize = 'M';
