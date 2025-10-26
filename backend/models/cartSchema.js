@@ -4,6 +4,7 @@ const cartSchema = new mongoose.Schema({
   username: { type: String, required: true },
   items: [
     {
+      cartKey: String,
       about: String,
       brandName: String,
       id: String,
@@ -11,7 +12,8 @@ const cartSchema = new mongoose.Schema({
       keyword: [String],
       name: String,
       priceCents: Number,
-      quantity: Number
+      quantity: Number,
+      selectedSize: String
     }
   ]
 });

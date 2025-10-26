@@ -546,3 +546,50 @@ body{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Size display */
+.browse-card-size{
+    font-size: 14px;
+    color: #666;
+    font-family: "League Spartan", sans-serif;
+    margin: 5px 0;
+}
+
+.browse-card-size strong{
+    color: #ee0652;
+    font-weight: 700;
+}
+
+/* Cart action row for quantity display */
+.cart-action-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.quantity-display{
+    font-family: "League Spartan", sans-serif;
+    font-size: 15px;
+    color: #666;
+}
+
+.quantity-display strong{
+    color: #333;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Responsive for quantity display */
+@media (max-width: 768px) {
+    .cart-action-row{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .quantity-display{
+        text-align: center;
+    }
+}

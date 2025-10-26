@@ -1,4 +1,3 @@
-// server_fixed_debug.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://127.0.0.1:5500';
 
-// --- Optional: try requiring Cart model safely ---
+// Load Cart model
 let Cart = null;
 try {
   Cart = require('./models/cartSchema');
@@ -18,7 +17,16 @@ try {
   console.warn('Warning: could not load ./models/cartSchema. Cart DB ops will be skipped.');
 }
 
-// --- MongoDB connection (non-fatal) ---
+// Load Product model
+let Product = null;
+try {
+  Product = require('./models/productSchema');
+  console.log('Product model loaded.');
+} catch (err) {
+  console.warn('Warning: could not load ./models/productSchema. Product DB ops will be skipped.');
+}
+
+// MongoDB connection
 async function connectDB() {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
@@ -34,7 +42,7 @@ async function connectDB() {
 }
 connectDB();
 
-// --- Basic user schema ---
+// User Schema
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, unique: true, sparse: true },
@@ -42,29 +50,68 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-// --- Middleware ---
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Favorites Schema
+const favoritesSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  items: { type: Array, default: [] },
+  updatedAt: { type: Date, default: Date.now }
+});
+const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favoritesSchema);
 
-// CORS config
+// Middleware
 app.use(cors({
   origin: FRONTEND_ORIGIN,
   credentials: true,
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Parse sendBeacon for /cart
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/cart', express.text({ type: '*/*' }));
+app.use('/favorites', express.text({ type: '*/*' }));
 
-// --- Routes ---
-
+// Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
 });
 
 app.get('/_health', (req, res) => {
   res.json({ ok: true, env: process.env.NODE_ENV || 'dev' });
+});
+
+// GET /products - Fetch all products
+app.get('/products', async (req, res) => {
+  try {
+    if (!Product) {
+      return res.status(500).json({ error: 'Product model not available' });
+    }
+
+    const productsData = await Product.findOne({});
+    
+    if (!productsData) {
+      return res.json({
+        tees: [],
+        hoodies: [],
+        cargos: [],
+        shirts: [],
+        jeans: [],
+        joggers: []
+      });
+    }
+
+    res.json({
+      tees: productsData.tees || [],
+      hoodies: productsData.hoodies || [],
+      cargos: productsData.cargos || [],
+      shirts: productsData.shirts || [],
+      jeans: productsData.jeans || [],
+      joggers: productsData.joggers || []
+    });
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
 });
 
 app.post('/signup', async (req, res) => {
@@ -127,20 +174,18 @@ app.post('/cart', async (req, res) => {
         body = JSON.parse(body);
       } catch (e) {
         console.error('Failed to parse /cart body:', e.message);
-        return res.status(400).send('Bad request - invalid JSON');
+        return res.status(400).json({ error: 'Bad request - invalid JSON' });
       }
     }
     
     const { username, items } = body || {};
     
     if (!username) {
-      return res.status(400).send('username required');
+      return res.status(400).json({ error: 'username required' });
     }
     if (!Array.isArray(items)) {
-      return res.status(400).send('items array required');
+      return res.status(400).json({ error: 'items array required' });
     }
-
-    console.log('Cart received for user:', username, 'items:', items.length);
 
     if (Cart && Cart.findOneAndUpdate) {
       try {
@@ -149,67 +194,42 @@ app.post('/cart', async (req, res) => {
           { items, updatedAt: new Date() }, 
           { upsert: true }
         );
-        console.log('Cart saved to DB for:', username, items);
       } catch (e) {
         console.error('Cart DB save failed:', e.message);
-      }
-    } else {
-      console.log('Cart model not available. Items count:', items.length);
-    }
-    
-    res.status(200).send('cart saved');
-  } catch (err) {
-    console.error('Error in /cart:', err);
-    res.status(500).send('server error');
-  }
-});
-
-// Add this route after your POST /cart route
-
-app.get('/cart/:username', async (req, res) => {
-  try {
-    const { username } = req.params;
-    console.log("Fetching cart for username:", username);
-    
-    if (!username) {
-      return res.status(400).json({ error: 'username required' });
-    }
-
-    // If Cart model is available, fetch from DB
-    if (Cart && Cart.findOne) {
-      try {
-        const cartData = await Cart.findOne({ username });
-        
-        if (!cartData || !cartData.items) {
-          console.log('No cart found for user:', username);
-          return res.json({ username, items: [] });
-        }
-        
-        console.log('Cart found for user:', username, 'items:', cartData.items.length);
-        return res.json({ username, items: cartData.items });
-      } catch (e) {
-        console.error('Cart DB fetch failed:', e.message);
         return res.status(500).json({ error: 'Database error' });
       }
-    } else {
-      console.log('Cart model not available');
-      return res.json({ username, items: [] });
     }
+    
+    res.status(200).json({ message: 'cart saved', itemCount: items.length });
   } catch (err) {
-    console.error('Error in GET /cart:', err);
+    console.error('Error in /cart:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
 
-// Favorites Schema (add this near your User schema)
-const favoritesSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  items: { type: Array, default: [] },
-  updatedAt: { type: Date, default: Date.now }
-});
-const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favoritesSchema);
+app.get('/cart/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        
+        if (!username) {
+            return res.status(400).json({ error: 'username required' });
+        }
 
-// POST /favorites - Save favorites
+        const cartData = await Cart.findOne({ username });
+        
+        if (!cartData || !cartData.items) {
+            console.log('⚠️ No cart data, returning empty');
+            return res.json({ username, items: [] });
+        }
+        return res.json({ username, items: cartData.items });
+    } catch (error) {
+        console.error('Error in GET /cart:', error);
+        res.status(500).json({ error: 'server error' });
+    }
+});
+
+
+
 app.post('/favorites', async (req, res) => {
   try {
     let body = req.body;
@@ -219,20 +239,18 @@ app.post('/favorites', async (req, res) => {
         body = JSON.parse(body);
       } catch (e) {
         console.error('Failed to parse /favorites body:', e.message);
-        return res.status(400).send('Bad request - invalid JSON');
+        return res.status(400).json({ error: 'Bad request - invalid JSON' });
       }
     }
     
     const { username, items } = body || {};
     
     if (!username) {
-      return res.status(400).send('username required');
+      return res.status(400).json({ error: 'username required' });
     }
     if (!Array.isArray(items)) {
-      return res.status(400).send('items array required');
+      return res.status(400).json({ error: 'items array required' });
     }
-
-    console.log('Favorites received for user:', username, 'items:', items.length);
 
     try {
       await Favorites.findOneAndUpdate(
@@ -240,23 +258,20 @@ app.post('/favorites', async (req, res) => {
         { items, updatedAt: new Date() }, 
         { upsert: true }
       );
-      console.log('Favorites saved to DB for:', username);
+      res.status(200).json({ message: 'favorites saved', itemCount: items.length });
     } catch (e) {
       console.error('Favorites DB save failed:', e.message);
+      return res.status(500).json({ error: 'Database error' });
     }
-    
-    res.status(200).send('favorites saved');
   } catch (err) {
     console.error('Error in /favorites:', err);
-    res.status(500).send('server error');
+    res.status(500).json({ error: 'server error' });
   }
 });
 
-// GET /favorites/:username - Fetch favorites
 app.get('/favorites/:username', async (req, res) => {
   try {
     const { username } = req.params;
-    console.log("Fetching favorites for username:", username);
     
     if (!username) {
       return res.status(400).json({ error: 'username required' });
@@ -266,11 +281,9 @@ app.get('/favorites/:username', async (req, res) => {
       const favData = await Favorites.findOne({ username });
       
       if (!favData || !favData.items) {
-        console.log('No favorites found for user:', username);
         return res.json({ username, items: [] });
       }
       
-      console.log('Favorites found for user:', username, 'items:', favData.items.length);
       return res.json({ username, items: favData.items });
     } catch (e) {
       console.error('Favorites DB fetch failed:', e.message);
@@ -282,10 +295,20 @@ app.get('/favorites/:username', async (req, res) => {
   }
 });
 
-// Add text parsing middleware for favorites
-app.use('/favorites', express.text({ type: '*/*' }));
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
-// Start server
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(err.statusCode || 500).json({
+    error: 'Internal server error',
+    message: err.message || 'Something went wrong'
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

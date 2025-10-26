@@ -1,3 +1,4 @@
+// Import statement commented out - now using global variables from products.js
 // import {tees,cargos,hoodies} from '../data/products.js';
 
 let type = JSON.parse(localStorage.getItem('product_type'));
@@ -6,11 +7,9 @@ let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
 // Normalize cart data structure
 Object.keys(cart).forEach(productId => {
-    // If the cart item is an array (old bug), fix it
     if (Array.isArray(cart[productId])) {
         cart[productId] = { ...cart[productId][0], quantity: 1 };
     }
-    // Ensure quantity exists
     if (!cart[productId].quantity) {
         cart[productId].quantity = 1;
     }
@@ -19,23 +18,54 @@ Object.keys(cart).forEach(productId => {
 localStorage.setItem('cart', JSON.stringify(cart));
 
 // Get all product types for related products
-let allProductTypes = [tees, cargos, hoodies];
+let allProductTypes = [];
 let otherProducts = [];
 
-// Filter to get products from other categories
-allProductTypes.forEach(productType => {
-    if (productType[0].name !== type[0].name) {
-        otherProducts = [...otherProducts, ...productType];
-    }
-});
+// Function to initialize products after they're loaded
+function initializeProducts() {
+    allProductTypes = [tees, cargos, hoodies];
+    
+    // Filter to get products from other categories
+    allProductTypes.forEach(productType => {
+        if (productType && productType.length > 0 && type && type.length > 0) {
+            if (productType[0].name !== type[0].name) {
+                otherProducts = [...otherProducts, ...productType];
+            }
+        }
+    });
+}
 
 // Shuffle array for random suggestions
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-    let currentProducts = [...type]; // Store current filtered products
+// Wait for products to load before initializing
+function startApp() {
+    if (!type || type.length === 0) {
+        console.error('No product type selected');
+        return;
+    }
+
+    // Check if products are loaded
+    if (tees.length === 0 && hoodies.length === 0 && cargos.length === 0) {
+        console.log('Waiting for products to load...');
+        // Wait for products loaded event
+        window.addEventListener('productsLoaded', () => {
+            console.log('Products loaded event received, initializing app...');
+            initializeProducts();
+            initializeApp();
+        });
+    } else {
+        // Products already loaded
+        console.log('Products already loaded, initializing app...');
+        initializeProducts();
+        initializeApp();
+    }
+}
+
+function initializeApp() {
+    let currentProducts = [...type];
     let filteredProducts = [...type];
     
     function formatCurrency(priceCents){
@@ -58,8 +88,23 @@ document.addEventListener('DOMContentLoaded',()=>{
                 </label>
             `;
         });
-        document.getElementById('brandFilters').innerHTML = brandHTML;
-        attachBrandFilters();
+        const brandFiltersEl = document.getElementById('brandFilters');
+        if (brandFiltersEl) {
+            brandFiltersEl.innerHTML = brandHTML;
+            attachBrandFilters();
+        }
+    }
+
+    function navigateToProduct(product) {
+        localStorage.setItem('currentProduct', JSON.stringify(product));
+        window.location.href = `./productSinglePage.html?id=${product.id}`;
+    }
+
+    function storeProduct(productId) {
+        const product = type.find(p => p.id === productId);
+        if (product) {
+            localStorage.setItem('currentProduct', JSON.stringify(product));
+        }
     }
 
     // Render main products
@@ -70,7 +115,7 @@ document.addEventListener('DOMContentLoaded',()=>{
             `
                 <div class="browse-card">
                     <div class="browse-card-img">
-                        <a href="./productSinglePage.html" style="cursor: pointer;">
+                        <a href="./productSinglePage.html?id=${product.id}" style="cursor: pointer;" onclick="storeProduct('${product.id}')">
                             <img src="${product.image}" alt="${product.name}">
                         </a>
                     </div>
@@ -90,11 +135,22 @@ document.addEventListener('DOMContentLoaded',()=>{
                 </div>
             `
         });
-        document.querySelector(".browsing-section").innerHTML = innerHtml;
-        document.querySelector(".js-products-title").innerHTML = type[0].name.charAt(0).toUpperCase() + type[0].name.slice(1);
-        document.getElementById('productCount').textContent = productsToRender.length;
         
-        // Re-attach event listeners after rendering
+        const browsingSectionEl = document.querySelector(".browsing-section");
+        if (browsingSectionEl) {
+            browsingSectionEl.innerHTML = innerHtml;
+        }
+        
+        const productsTitleEl = document.querySelector(".js-products-title");
+        if (productsTitleEl && type && type.length > 0) {
+            productsTitleEl.innerHTML = type[0].name.charAt(0).toUpperCase() + type[0].name.slice(1);
+        }
+        
+        const productCountEl = document.getElementById('productCount');
+        if (productCountEl) {
+            productCountEl.textContent = productsToRender.length;
+        }
+        
         attachCartButtons();
         attachWishlistButtons();
         renderFavStatus();
@@ -102,6 +158,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     // Render related products
     function renderRelatedProducts() {
+        if (otherProducts.length === 0) {
+            console.log('No related products available');
+            return;
+        }
+        
         const shuffled = shuffleArray([...otherProducts]).slice(0, 8);
         let relatedHTML = '';
         
@@ -120,7 +181,10 @@ document.addEventListener('DOMContentLoaded',()=>{
             `;
         });
         
-        document.querySelector('.related-products-container').innerHTML = relatedHTML;
+        const relatedContainerEl = document.querySelector('.related-products-container');
+        if (relatedContainerEl) {
+            relatedContainerEl.innerHTML = relatedHTML;
+        }
     }
 
     // Initial render
@@ -129,8 +193,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     extractBrands();
 
     function updateFavCartCount(){
-        document.querySelector(".js-favourites-count").innerHTML = localStorage.getItem('favCount') || 0;
-        document.querySelector(".js-cart-count").innerHTML = localStorage.getItem('cartCount') || 0;
+        const favCountEl = document.querySelector(".js-favourites-count");
+        const cartCountEl = document.querySelector(".js-cart-count");
+        
+        if (favCountEl) {
+            favCountEl.innerHTML = localStorage.getItem('favCount') || 0;
+        }
+        if (cartCountEl) {
+            cartCountEl.innerHTML = localStorage.getItem('cartCount') || 0;
+        }
     }
 
     updateFavCartCount();
@@ -148,16 +219,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     const priceSlider = document.getElementById('priceSlider');
     const maxPriceDisplay = document.getElementById('maxPrice');
     
-    priceSlider.addEventListener('input', function() {
-        const maxPrice = this.value;
-        maxPriceDisplay.textContent = '$' + formatCurrency(maxPrice);
-        
-        // Update slider background
-        const percentage = (maxPrice / 10000) * 100;
-        this.style.background = `linear-gradient(to right, #ee0652 0%, #ee0652 ${percentage}%, #e0e0e0 ${percentage}%)`;
-        
-        applyFilters();
-    });
+    if (priceSlider && maxPriceDisplay) {
+        priceSlider.addEventListener('input', function() {
+            const maxPrice = this.value;
+            maxPriceDisplay.textContent = '$' + formatCurrency(maxPrice);
+            
+            const percentage = (maxPrice / 10000) * 100;
+            this.style.background = `linear-gradient(to right, #ee0652 0%, #ee0652 ${percentage}%, #e0e0e0 ${percentage}%)`;
+            
+            applyFilters();
+        });
+    }
 
     // Brand filter
     function attachBrandFilters() {
@@ -172,22 +244,24 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
 
     // Sort functionality
-    document.getElementById('sortSelect').addEventListener('change', function() {
-        const sortBy = this.value;
-        sortProducts(sortBy);
-    });
+    const sortSelectEl = document.getElementById('sortSelect');
+    if (sortSelectEl) {
+        sortSelectEl.addEventListener('change', function() {
+            const sortBy = this.value;
+            sortProducts(sortBy);
+        });
+    }
 
     // Apply all filters
     function applyFilters() {
-        const maxPrice = parseInt(priceSlider.value);
+        const maxPrice = priceSlider ? parseInt(priceSlider.value) : 10000;
         const selectedBrands = Array.from(document.querySelectorAll('.brand-filter:checked')).map(cb => cb.value);
         const selectedSizes = Array.from(document.querySelectorAll('.size-filter:checked')).map(cb => cb.value);
         
         filteredProducts = type.filter(product => {
             const priceMatch = product.priceCents <= maxPrice;
             const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brandName);
-            // Size filter would need size property in product data
-            const sizeMatch = selectedSizes.length === 0; // Modify when you have size data
+            const sizeMatch = selectedSizes.length === 0;
             
             return priceMatch && brandMatch && sizeMatch;
         });
@@ -217,18 +291,30 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
 
     // Clear filters
-    document.getElementById('clearFilters').addEventListener('click', function() {
-        priceSlider.value = 10000;
-        maxPriceDisplay.textContent = '$100.00';
-        priceSlider.style.background = 'linear-gradient(to right, #ee0652 0%, #ee0652 100%, #e0e0e0 100%)';
-        
-        document.querySelectorAll('.brand-filter').forEach(cb => cb.checked = false);
-        document.querySelectorAll('.size-filter').forEach(cb => cb.checked = false);
-        document.getElementById('sortSelect').value = 'featured';
-        
-        filteredProducts = [...type];
-        renderProducts(filteredProducts);
-    });
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            if (priceSlider) {
+                priceSlider.value = 10000;
+            }
+            if (maxPriceDisplay) {
+                maxPriceDisplay.textContent = '$100.00';
+            }
+            if (priceSlider) {
+                priceSlider.style.background = 'linear-gradient(to right, #ee0652 0%, #ee0652 100%, #e0e0e0 100%)';
+            }
+            
+            document.querySelectorAll('.brand-filter').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.size-filter').forEach(cb => cb.checked = false);
+            
+            if (sortSelectEl) {
+                sortSelectEl.value = 'featured';
+            }
+            
+            filteredProducts = [...type];
+            renderProducts(filteredProducts);
+        });
+    }
 
     // Wishlist functionality
     function saveFavList(){
@@ -283,11 +369,19 @@ document.addEventListener('DOMContentLoaded',()=>{
                 
                 const result = type.find(item => item.id === productId);
                 
-                if(!cart[productId]){
-                    cart[productId] = { ...result, quantity: 1 };
+                // Create unique cartKey with default size M for quick-add
+                const defaultSize = 'M';
+                const cartKey = `${productId}-${defaultSize}`;
+                
+                if(!cart[cartKey]){
+                    cart[cartKey] = { 
+                        ...result, 
+                        quantity: 1,
+                        selectedSize: defaultSize
+                    };
                 }
                 else{
-                    cart[productId].quantity++;
+                    cart[cartKey].quantity++;
                 }
                 
                 cartCount++;
@@ -303,6 +397,8 @@ document.addEventListener('DOMContentLoaded',()=>{
             });
         });
     }
+
+
     // Login token handling
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('login') === 'success'){
@@ -311,62 +407,83 @@ document.addEventListener('DOMContentLoaded',()=>{
             name: urlParams.get('wt_user'),
             email: urlParams.get('email')
         }));
-        console.log(JSON.parse(localStorage.getItem('wt_user')));
-        document.querySelector(".login-token").href = "../user/user.html";
-        document.querySelector(".login-token-info").innerHTML = "My Account";
+        
+        const loginTokenEl = document.querySelector(".login-token");
+        const loginTokenInfoEl = document.querySelector(".login-token-info");
+        
+        if (loginTokenEl) loginTokenEl.href = "../user/user.html";
+        if (loginTokenInfoEl) loginTokenInfoEl.innerHTML = "My Account";
     }
 
     if(localStorage.getItem('login-token') === 'true'){
-        document.querySelector(".login-token").href = "../user/user.html";
-        document.querySelector(".login-token-info").innerHTML = "My Account";
+        const loginTokenEl = document.querySelector(".login-token");
+        const loginTokenInfoEl = document.querySelector(".login-token-info");
+        
+        if (loginTokenEl) loginTokenEl.href = "../user/user.html";
+        if (loginTokenInfoEl) loginTokenInfoEl.innerHTML = "My Account";
     }
     else{
-        document.querySelector(".login-token").href = "login.html";
-        document.querySelector(".login-token-info").innerHTML = "Sign in/up";
+        const loginTokenEl = document.querySelector(".login-token");
+        const loginTokenInfoEl = document.querySelector(".login-token-info");
+        
+        if (loginTokenEl) loginTokenEl.href = "../login.html";
+        if (loginTokenInfoEl) loginTokenInfoEl.innerHTML = "Sign in/up";
     }
+
     // Related products slider
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const container = document.querySelector('.related-products-container');
     
-    prevBtn.addEventListener('click', () => {
-        container.scrollBy({ left: -300, behavior: 'smooth' });
-    });
-    
-    nextBtn.addEventListener('click', () => {
-        container.scrollBy({ left: 300, behavior: 'smooth' });
-    });
+    if (prevBtn && nextBtn && container) {
+        prevBtn.addEventListener('click', () => {
+            container.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            container.scrollBy({ left: 300, behavior: 'smooth' });
+        });
 
-    // Auto-hide slider buttons based on scroll position
-    function updateSliderButtons() {
-        const maxScroll = container.scrollWidth - container.clientWidth;
-        
-        if (container.scrollLeft <= 0) {
-            prevBtn.style.opacity = '0.3';
-            prevBtn.style.pointerEvents = 'none';
-        } else {
-            prevBtn.style.opacity = '1';
-            prevBtn.style.pointerEvents = 'auto';
+        // Auto-hide slider buttons based on scroll position
+        function updateSliderButtons() {
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            
+            if (container.scrollLeft <= 0) {
+                prevBtn.style.opacity = '0.3';
+                prevBtn.style.pointerEvents = 'none';
+            } else {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+            }
+            
+            if (container.scrollLeft >= maxScroll - 5) {
+                nextBtn.style.opacity = '0.3';
+                nextBtn.style.pointerEvents = 'none';
+            } else {
+                nextBtn.style.opacity = '1';
+                nextBtn.style.pointerEvents = 'auto';
+            }
         }
-        
-        if (container.scrollLeft >= maxScroll - 5) {
-            nextBtn.style.opacity = '0.3';
-            nextBtn.style.pointerEvents = 'none';
-        } else {
-            nextBtn.style.opacity = '1';
-            nextBtn.style.pointerEvents = 'auto';
-        }
+
+        container.addEventListener('scroll', updateSliderButtons);
+        updateSliderButtons();
     }
-
-    container.addEventListener('scroll', updateSliderButtons);
-    updateSliderButtons();
 
     // Black screen effect for navigation hover
     window.blackscreen = function(){
-        document.getElementById("main").style.opacity = 0.5;
+        const mainEl = document.getElementById("main");
+        if (mainEl) {
+            mainEl.style.opacity = 0.5;
+        }
     }
     
     window.blackscreenout = function(){
-        document.getElementById("main").style.opacity = 1;
+        const mainEl = document.getElementById("main");
+        if (mainEl) {
+            mainEl.style.opacity = 1;
+        }
     }
-});
+}
+
+// Start the app when DOM is ready
+document.addEventListener('DOMContentLoaded', startApp);

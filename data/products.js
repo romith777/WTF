@@ -1,279 +1,72 @@
-const tees = [{
-    id : "tee-1",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,    
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-2",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-3",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-4",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
+// Initialize empty arrays
+let tees = [];
+let hoodies = [];
+let cargos = [];
+let shirts = [];
+let jeans = [];
+let joggers = [];
 
-},
-{
-    id : "tee-5",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-6",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-7",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-8",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-9",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
-},
-{
-    id : "tee-10",
-    name : "tees",
-    image : "../assets/Tees.jpg",
-    about : "This is a Tee, yes it is",
-    brandName : "WTPrints",
-    priceCents : 2000,
-    keyword : ["tees","tshirts","tee","tshirt"]
+// Flags
+let productsLoaded = false;
+let productsLoading = false;
+
+// Fetch products from backend
+async function fetchProducts() {
+    if (productsLoading) {
+        return;
+    }
+    
+    productsLoading = true;
+    
+    try {
+        const response = await fetch('http://127.0.0.1:3000/products');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Update global arrays
+        tees = Array.isArray(data.tees) ? data.tees : [];
+        hoodies = Array.isArray(data.hoodies) ? data.hoodies : [];
+        cargos = Array.isArray(data.cargos) ? data.cargos : [];
+        shirts = Array.isArray(data.shirts) ? data.shirts : [];
+        jeans = Array.isArray(data.jeans) ? data.jeans : [];
+        joggers = Array.isArray(data.joggers) ? data.joggers : [];
+        
+        productsLoaded = true;
+        productsLoading = false;
+        
+        // Dispatch event
+        window.dispatchEvent(new CustomEvent('productsLoaded', {
+            detail: {
+                tees: tees,
+                hoodies: hoodies,
+                cargos: cargos,
+                shirts: shirts,
+                jeans: jeans,
+                joggers: joggers
+            }
+        }));
+        
+        return true;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        productsLoaded = false;
+        productsLoading = false;
+        
+        // Set to empty arrays on error
+        tees = [];
+        hoodies = [];
+        cargos = [];
+        shirts = [];
+        jeans = [];
+        joggers = [];
+        
+        return false;
+    }
 }
-]
-const cargos = [
-{
-    id : "cargo-1",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-2",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-3",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-4",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-5",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-6",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-7",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-8",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-9",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-},
-{
-    id : "cargo-10",
-    name : "cargos",
-    image : "../assets/cargo.jpg",
-    about : "This is a Cargo, yes it is",
-    brandName : "WTPrints",
-    priceCents : 3000,
-    keyword : ["cargos","pants","trousers"]
-}
-]
-const hoodies = [
-{
-    id : "hoodie-1",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-2",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-3",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-4",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-5",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-6",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-7",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-8",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-9",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-},
-{
-    id : "hoodie-10",
-    name : "hoodies",
-    image : "../assets/hoodie.jpg",
-    about : "This is a Hoodie, yes it is",
-    brandName : "WTPrints",
-    priceCents : 4000,
-    keyword : ["hoodies","sweatshirts","hoodie"]
-}
-]
-const shirts = []
-const jeans = []
-const joggers = []
+
+// Auto-fetch when script loads
+fetchProducts();
