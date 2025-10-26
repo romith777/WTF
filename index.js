@@ -158,3 +158,5 @@ function updateLoginSection() {
 window.addEventListener('load', function() {
     updateLoginSection();
 });
+
+console.log(API_URI);
