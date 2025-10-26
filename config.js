@@ -1,1 +1,0 @@
-const API_URI = window.location.origin;
