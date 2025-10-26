@@ -1,4 +1,4 @@
-const API_URL = window.location.origin;
+const API_URI = window.location.origin;
 
 let currentProduct = null;
 let selectedSize = 'M';
@@ -497,7 +497,7 @@ function sendCartToBackend(cartToSend) {
     console.log("cartItems",cartItems);
     const payload = { username, items: cartItems };
     console.log("payload",payload);
-    fetch(`${API_URL}/cart`, {
+    fetch(`${API_URI}/cart`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -1,4 +1,4 @@
-const API_URL = window.location.origin;
+const API_URI = window.location.origin;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     window.addEventListener("load", function() {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             password: form.password.value
         };
         try {
-            const res = await fetch('window.location.origin/signup', {
+            const res = await fetch(`${API_URI}/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

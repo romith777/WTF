@@ -1,4 +1,6 @@
 // Black screen effect functions
+const API_URI = window.location.origin;
+
 function blackscreen(){
     document.getElementById("main").style.opacity = 0.5;
 }
