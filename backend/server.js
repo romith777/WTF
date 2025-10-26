@@ -3,10 +3,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://127.0.0.1:5500';
 
 // Load Cart model
 let Cart = null;
@@ -58,9 +58,9 @@ const favoritesSchema = new mongoose.Schema({
 });
 const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favoritesSchema);
 
-// Middleware
+// ✅ UPDATED CORS - Allow all origins for Vercel
 app.use(cors({
-  origin: FRONTEND_ORIGIN,
+  origin: '*',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -68,12 +68,22 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/cart', express.text({ type: '*/*' }));
-app.use('/favorites', express.text({ type: '*/*' }));
+
+// ✅ Serve static files (HTML, CSS, JS, images)
+app.use(express.static(__dirname));
+
+// ✅ Serve specific folders
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/cart', express.static(path.join(__dirname, 'cart')));
+app.use('/data', express.static(path.join(__dirname, 'data')));
+app.use('/product_pages', express.static(path.join(__dirname, 'product_pages')));
+app.use('/req_scripts', express.static(path.join(__dirname, 'req_scripts')));
+app.use('/user', express.static(path.join(__dirname, 'user')));
+app.use('/favouritesPage', express.static(path.join(__dirname, 'favouritesPage')));
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ message: 'Server is running' });
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/_health', (req, res) => {
@@ -208,27 +218,28 @@ app.post('/cart', async (req, res) => {
 });
 
 app.get('/cart/:username', async (req, res) => {
-    try {
-        const { username } = req.params;
-        
-        if (!username) {
-            return res.status(400).json({ error: 'username required' });
-        }
-
-        const cartData = await Cart.findOne({ username });
-        
-        if (!cartData || !cartData.items) {
-            console.log('⚠️ No cart data, returning empty');
-            return res.json({ username, items: [] });
-        }
-        return res.json({ username, items: cartData.items });
-    } catch (error) {
-        console.error('Error in GET /cart:', error);
-        res.status(500).json({ error: 'server error' });
+  try {
+    const { username } = req.params;
+    
+    if (!username) {
+      return res.status(400).json({ error: 'username required' });
     }
+
+    if (!Cart) {
+      return res.json({ username, items: [] });
+    }
+
+    const cartData = await Cart.findOne({ username });
+    
+    if (!cartData || !cartData.items) {
+      return res.json({ username, items: [] });
+    }
+    return res.json({ username, items: cartData.items });
+  } catch (error) {
+    console.error('Error in GET /cart:', error);
+    res.status(500).json({ error: 'server error' });
+  }
 });
-
-
 
 app.post('/favorites', async (req, res) => {
   try {
@@ -295,9 +306,9 @@ app.get('/favorites/:username', async (req, res) => {
   }
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+// ✅ Catch-all route for HTML pages
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Error handling middleware
@@ -309,8 +320,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Only listen if not in production (Vercel handles this)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
 
+// ✅ Export for Vercel
 module.exports = app;

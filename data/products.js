@@ -19,7 +19,7 @@ async function fetchProducts() {
     productsLoading = true;
     
     try {
-        const response = await fetch('http://127.0.0.1:3000/products');
+        const response = await fetch(`${API_URI}/products`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

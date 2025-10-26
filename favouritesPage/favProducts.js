@@ -190,7 +190,7 @@ async function sendFavoritesToBackend() {
 
     const payload = { username, items: favItems };
     const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    const url = 'http://127.0.0.1:3000/favorites';
+    const url = `${API_URI}/favorites`;
 
     const ok = navigator.sendBeacon(url, blob);
     console.log('sendBeacon returned', ok);

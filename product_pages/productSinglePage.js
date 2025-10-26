@@ -495,7 +495,7 @@ function sendCartToBackend(cartToSend) {
     console.log("cartItems",cartItems);
     const payload = { username, items: cartItems };
     console.log("payload",payload);
-    fetch('http://127.0.0.1:3000/cart', {
+    fetch(`${API_URL}/cart`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
