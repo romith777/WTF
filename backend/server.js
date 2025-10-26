@@ -14,7 +14,7 @@ try {
   Cart = require('./models/cartSchema');
   console.log('Cart model loaded.');
 } catch (err) {
-  console.warn('Warning: could not load ./models/cartSchema. Cart DB ops will be skipped.');
+  console.warn('Warning: could not load ./models/cartSchema.');
 }
 
 // Load Product model
@@ -23,7 +23,7 @@ try {
   Product = require('./models/productSchema');
   console.log('Product model loaded.');
 } catch (err) {
-  console.warn('Warning: could not load ./models/productSchema. Product DB ops will be skipped.');
+  console.warn('Warning: could not load ./models/productSchema.');
 }
 
 // MongoDB connection
@@ -58,21 +58,13 @@ const favoritesSchema = new mongoose.Schema({
 });
 const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favoritesSchema);
 
-// ✅ UPDATED CORS - Allow all origins for Vercel
-app.use(cors({
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve static files (HTML, CSS, JS, images)
+// ✅ Serve static files BEFORE API routes
 app.use(express.static(__dirname));
-
-// ✅ Serve specific folders
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/cart', express.static(path.join(__dirname, 'cart')));
 app.use('/data', express.static(path.join(__dirname, 'data')));
@@ -81,16 +73,8 @@ app.use('/req_scripts', express.static(path.join(__dirname, 'req_scripts')));
 app.use('/user', express.static(path.join(__dirname, 'user')));
 app.use('/favouritesPage', express.static(path.join(__dirname, 'favouritesPage')));
 
-// Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+// ✅ API ROUTES (MUST BE BEFORE CATCH-ALL)
 
-app.get('/_health', (req, res) => {
-  res.json({ ok: true, env: process.env.NODE_ENV || 'dev' });
-});
-
-// GET /products - Fetch all products
 app.get('/products', async (req, res) => {
   try {
     if (!Product) {
@@ -177,18 +161,7 @@ app.post('/login', async (req, res) => {
 
 app.post('/cart', async (req, res) => {
   try {
-    let body = req.body;
-    
-    if (typeof body === 'string') {
-      try {
-        body = JSON.parse(body);
-      } catch (e) {
-        console.error('Failed to parse /cart body:', e.message);
-        return res.status(400).json({ error: 'Bad request - invalid JSON' });
-      }
-    }
-    
-    const { username, items } = body || {};
+    const { username, items } = req.body;
     
     if (!username) {
       return res.status(400).json({ error: 'username required' });
@@ -197,17 +170,12 @@ app.post('/cart', async (req, res) => {
       return res.status(400).json({ error: 'items array required' });
     }
 
-    if (Cart && Cart.findOneAndUpdate) {
-      try {
-        await Cart.findOneAndUpdate(
-          { username }, 
-          { items, updatedAt: new Date() }, 
-          { upsert: true }
-        );
-      } catch (e) {
-        console.error('Cart DB save failed:', e.message);
-        return res.status(500).json({ error: 'Database error' });
-      }
+    if (Cart) {
+      await Cart.findOneAndUpdate(
+        { username }, 
+        { items, updatedAt: new Date() }, 
+        { upsert: true }
+      );
     }
     
     res.status(200).json({ message: 'cart saved', itemCount: items.length });
@@ -243,18 +211,7 @@ app.get('/cart/:username', async (req, res) => {
 
 app.post('/favorites', async (req, res) => {
   try {
-    let body = req.body;
-    
-    if (typeof body === 'string') {
-      try {
-        body = JSON.parse(body);
-      } catch (e) {
-        console.error('Failed to parse /favorites body:', e.message);
-        return res.status(400).json({ error: 'Bad request - invalid JSON' });
-      }
-    }
-    
-    const { username, items } = body || {};
+    const { username, items } = req.body;
     
     if (!username) {
       return res.status(400).json({ error: 'username required' });
@@ -263,17 +220,12 @@ app.post('/favorites', async (req, res) => {
       return res.status(400).json({ error: 'items array required' });
     }
 
-    try {
-      await Favorites.findOneAndUpdate(
-        { username }, 
-        { items, updatedAt: new Date() }, 
-        { upsert: true }
-      );
-      res.status(200).json({ message: 'favorites saved', itemCount: items.length });
-    } catch (e) {
-      console.error('Favorites DB save failed:', e.message);
-      return res.status(500).json({ error: 'Database error' });
-    }
+    await Favorites.findOneAndUpdate(
+      { username }, 
+      { items, updatedAt: new Date() }, 
+      { upsert: true }
+    );
+    res.status(200).json({ message: 'favorites saved', itemCount: items.length });
   } catch (err) {
     console.error('Error in /favorites:', err);
     res.status(500).json({ error: 'server error' });
@@ -288,44 +240,40 @@ app.get('/favorites/:username', async (req, res) => {
       return res.status(400).json({ error: 'username required' });
     }
 
-    try {
-      const favData = await Favorites.findOne({ username });
-      
-      if (!favData || !favData.items) {
-        return res.json({ username, items: [] });
-      }
-      
-      return res.json({ username, items: favData.items });
-    } catch (e) {
-      console.error('Favorites DB fetch failed:', e.message);
-      return res.status(500).json({ error: 'Database error' });
+    const favData = await Favorites.findOne({ username });
+    
+    if (!favData || !favData.items) {
+      return res.json({ username, items: [] });
     }
+    
+    return res.json({ username, items: favData.items });
   } catch (err) {
     console.error('Error in GET /favorites:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
 
-// ✅ Catch-all route for HTML pages
+// ✅ CATCH-ALL ROUTE (MUST BE LAST!)
+// This handles SPA routing for HTML pages
 app.get('*', (req, res) => {
+  // Don't catch API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(err.statusCode || 500).json({
-    error: 'Internal server error',
-    message: err.message || 'Something went wrong'
-  });
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
-// Only listen if not in production (Vercel handles this)
+// Only listen locally (Vercel handles this)
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
-// ✅ Export for Vercel
 module.exports = app;
