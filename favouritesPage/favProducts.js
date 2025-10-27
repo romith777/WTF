@@ -312,25 +312,24 @@ window.addEventListener('beforeunload', () => {
     sendFavoritesToBackend();
 });
 
-// Update login status
-window.addEventListener('load', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('login') === 'success'){
-        localStorage.setItem('login-token', true);
-        localStorage.setItem('wt_user', JSON.stringify({
-            name: urlParams.get('wt_user'),
-            email: urlParams.get('email')
-        }));
-    }
+// Login token handling
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('login') === 'success'){
+    localStorage.setItem('login-token', true);
+    localStorage.setItem('wt_user', JSON.stringify({
+        name: urlParams.get('wt_user'),
+        email: urlParams.get('email')
+    }));
+    // console.log(JSON.parse(localStorage.getItem('wt_user')));
+    document.querySelector(".login-token").href = "./user/user.html";
+    document.querySelector(".login-token-info").innerHTML = "My Account";
+}
 
-    const loginLinks = document.querySelectorAll('a[href="login.html"]');
-    if(localStorage.getItem('login-token') === 'true'){
-        loginLinks.forEach(link => {
-            const pTag = link.querySelector('p');
-            if(pTag && pTag.textContent.trim() === 'Sign in/up'){
-                link.href = "../user/user.html";
-                pTag.textContent = "My Account";
-            }
-        });
-    }
-});
+if(localStorage.getItem('login-token') === 'true'){
+    document.querySelector(".login-token").href = "./user/user.html";
+    document.querySelector(".login-token-info").innerHTML = "My Account";
+}
+else{
+    document.querySelector(".login-token").href = "../login.html";
+    document.querySelector(".login-token-info").innerHTML = "Sign in/up";
+}
