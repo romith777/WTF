@@ -45,7 +45,7 @@ function renderProducts(products){
             innerHtml += `
                 <div class="browse-card js-card-${product.id}">
                     <div class="browse-card-img">
-                        <a href="../product_pages/productSinglePage.html" style="cursor: pointer;">
+                        <a href="../product_pages/productSinglePage.html?id=${product.id}" style="cursor: pointer;">
                             <img src="${product.image}" alt="${product.name}">
                         </a>
                     </div>

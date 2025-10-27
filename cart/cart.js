@@ -94,9 +94,11 @@ function renderProducts(cartObj){
         
         innerHtml += `
             <div class="browse-card js-card-${cartKey}">
-                <div class="browse-card-img">
-                    <img src="${product.image}" alt="${product.name}">
-                </div>
+                <a href="../product_pages/productSinglePage.html?id=${product.id}" style="cursor: pointer;">
+                    <div class="browse-card-img">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                </a>
                 <div class="browse-card-information">
                     <div class="browse-card-details">
                         <div class="browse-card-information-area-text">
