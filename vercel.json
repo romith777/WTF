@@ -9,7 +9,7 @@
     { "src": "/products", "dest": "backend/server.js" },
     { "src": "/signup", "dest": "backend/server.js" },
     { "src": "/login", "dest": "backend/server.js" },
-    { "src": "/cart(.*)", "dest": "backend/server.js" },
+    { "src": "/cart/([^/]+)$", "dest": "backend/server.js" },
     { "src": "/favorites(.*)", "dest": "backend/server.js" },
     { "src": "/(.*)", "dest": "$1" }
   ]
