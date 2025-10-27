@@ -356,48 +356,48 @@ function initializeApp() {
         });
     }
 
-    function getUsername() {
-        const wtUser = localStorage.getItem('wt_user');
-        if (!wtUser) return null;
-        try {
-            const parsed = JSON.parse(wtUser);
-            return typeof parsed === 'string' ? parsed : (parsed.name || parsed.username || parsed);
-        } catch (e) {
-            return wtUser;
-        }
-    }
+    // function getUsername() {
+    //     const wtUser = localStorage.getItem('wt_user');
+    //     if (!wtUser) return null;
+    //     try {
+    //         const parsed = JSON.parse(wtUser);
+    //         return typeof parsed === 'string' ? parsed : (parsed.name || parsed.username || parsed);
+    //     } catch (e) {
+    //         return wtUser;
+    //     }
+    // }
 
-    async function fetchCartFromBackend() {
-        const username = getUsername();
+    // async function fetchCartFromBackend() {
+    //     const username = getUsername();
         
-        if (!username) {
-            console.log('No username');
-            return null;
-        }
+    //     if (!username) {
+    //         console.log('No username');
+    //         return null;
+    //     }
 
-        try {
-            const url = `${API_URI}/api/cart/${username}`;
+    //     try {
+    //         const url = `${API_URI}/api/cart/${username}`;
             
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    //         const response = await fetch(url, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
             
-            if (!response.ok) {
-                console.log('Response not OK');
-                return null;
-            }
+    //         if (!response.ok) {
+    //             console.log('Response not OK');
+    //             return null;
+    //         }
 
-            const data = await response.json();
+    //         const data = await response.json();
             
-            return data.items || [];
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-            return null;
-        }
-    }
+    //         return data.items || [];
+    //     } catch (error) {
+    //         console.error('Error fetching cart:', error);
+    //         return null;
+    //     }
+    // }
 
 
 
