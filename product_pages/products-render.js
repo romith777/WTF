@@ -356,6 +356,51 @@ function initializeApp() {
         });
     }
 
+    function getUsername() {
+        const wtUser = localStorage.getItem('wt_user');
+        if (!wtUser) return null;
+        try {
+            const parsed = JSON.parse(wtUser);
+            return typeof parsed === 'string' ? parsed : (parsed.name || parsed.username || parsed);
+        } catch (e) {
+            return wtUser;
+        }
+    }
+
+    async function fetchCartFromBackend() {
+        const username = getUsername();
+        
+        if (!username) {
+            console.log('No username');
+            return null;
+        }
+
+        try {
+            const url = `${API_URI}/api/cart/${username}`;
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                console.log('Response not OK');
+                return null;
+            }
+
+            const data = await response.json();
+            
+            return data.items || [];
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+            return null;
+        }
+    }
+
+    
+
     // Cart functionality
     function saveCart(){
         localStorage.setItem("cart", JSON.stringify(cart));

@@ -312,7 +312,7 @@ async function initializeCart() {
     }
     
     localStorage.setItem('cart', JSON.stringify(cart));
-    // console.log('Initialized cart:', cart);
+    console.log('Initialized cart:', cart);
     updateCartCount();
     renderProducts(cart);
 }
