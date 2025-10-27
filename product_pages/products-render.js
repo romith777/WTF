@@ -356,54 +356,53 @@ function initializeApp() {
         });
     }
 
-    // function getUsername() {
-    //     const wtUser = localStorage.getItem('wt_user');
-    //     if (!wtUser) return null;
-    //     try {
-    //         const parsed = JSON.parse(wtUser);
-    //         return typeof parsed === 'string' ? parsed : (parsed.name || parsed.username || parsed);
-    //     } catch (e) {
-    //         return wtUser;
-    //     }
-    // }
-
-    // async function fetchCartFromBackend() {
-    //     const username = getUsername();
+    function sendCartToBackend(cartToSend) {
+        const username = getUsername();
         
-    //     if (!username) {
-    //         console.log('No username');
-    //         return null;
-    //     }
-
-    //     try {
-    //         const url = `${API_URI}/api/cart/${username}`;
-            
-    //         const response = await fetch(url, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-            
-    //         if (!response.ok) {
-    //             console.log('Response not OK');
-    //             return null;
-    //         }
-
-    //         const data = await response.json();
-            
-    //         return data.items || [];
-    //     } catch (error) {
-    //         console.error('Error fetching cart:', error);
-    //         return null;
-    //     }
-    // }
-
-
+        if (!username) {
+            return false;
+        }
+        
+        const cartItems = [];
+        // console.log("cartToSend",cartToSend);
+        Object.keys(cartToSend).forEach(cartKey => {
+            const item = cartToSend[cartKey];
+            // console.log('Cart item to send:', cartKey);
+            // console.log("inside sendcart",item);
+            cartItems.push({
+                cartKey: cartKey,
+                id: item.id,
+                name: item.name,
+                image: item.image,
+                brandName: item.brandName,
+                about: item.about,
+                priceCents: item.priceCents,
+                keyword: item.keyword,
+                quantity: item.quantity || 1,
+                selectedSize: item.selectedSize
+            });
+        });
+        // console.log("cartItems",cartItems);
+        const payload = { username, items: cartItems };
+        // console.log("payload",payload);
+        fetch(`${API_URI}/api/cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .catch(error => {
+            console.error('Error syncing cart:', error);
+        });
+        
+        return true;
+    }
 
     // Cart functionality
     function saveCart(){
         localStorage.setItem("cart", JSON.stringify(cart));
+        sendCartToBackend(cart);
     }
 
     function attachCartButtons() {
