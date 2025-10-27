@@ -129,7 +129,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/cart', async (req, res) => {
+app.post('/api/cart', async (req, res) => {
   try {
     const { username, items } = req.body;
     if (!username || !Array.isArray(items)) {
@@ -148,7 +148,7 @@ app.post('/cart', async (req, res) => {
   }
 });
 
-app.get('/cart/:username', async (req, res) => {
+app.get('/api/cart/:username', async (req, res) => {
   try {
     const cartData = Cart ? await Cart.findOne({ username: req.params.username }) : null;
     res.json({ username: req.params.username, items: cartData?.items || [] });
@@ -157,7 +157,7 @@ app.get('/cart/:username', async (req, res) => {
   }
 });
 
-app.post('/favorites', async (req, res) => {
+app.post('/api/favorites', async (req, res) => {
   try {
     const { username, items } = req.body;
     if (!username || !Array.isArray(items)) {
@@ -174,7 +174,7 @@ app.post('/favorites', async (req, res) => {
   }
 });
 
-app.get('/favorites/:username', async (req, res) => {
+app.get('/api/favorites/:username', async (req, res) => {
   try {
     const favData = await Favorites.findOne({ username: req.params.username });
     res.json({ username: req.params.username, items: favData?.items || [] });

@@ -192,7 +192,7 @@ async function sendFavoritesToBackend() {
 
     const payload = { username, items: favItems };
     const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    const url = `${API_URI}/favorites`;
+    const url = `${API_URI}/api/favorites`;
 
     const ok = navigator.sendBeacon(url, blob);
     // console.log('sendBeacon returned', ok);
@@ -208,7 +208,7 @@ async function fetchFavoritesFromBackend() {
     }
 
     try {
-        const url = `http://127.0.0.1:3000/favorites/${username}`;
+        const url = `${API_URI}/api/favorites/${username}`;
         // console.log("Fetching favorites from:", url);
         
         const response = await fetch(url, {

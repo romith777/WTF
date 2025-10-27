@@ -226,7 +226,7 @@ function sendCartToBackend() {
 
     const payload = { username, items: cartItems };
     
-    fetch(`${API_URI}/cart`, {
+    fetch(`${API_URI}/api/cart`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -249,7 +249,7 @@ async function fetchCartFromBackend() {
     }
 
     try {
-        const url = `${API_URI}/cart/${username}`;
+        const url = `${API_URI}/api/cart/${username}`;
         
         const response = await fetch(url, {
             method: 'GET',
