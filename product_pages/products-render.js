@@ -356,6 +356,17 @@ function initializeApp() {
         });
     }
 
+    function getUsername() {
+        const wtUser = localStorage.getItem('wt_user');
+        if (!wtUser) return null;
+        try {
+            const parsed = JSON.parse(wtUser);
+            return typeof parsed === 'string' ? parsed : (parsed.name || parsed.username || parsed);
+        } catch (e) {
+            return wtUser;
+        }
+    }
+
     function sendCartToBackend(cartToSend) {
         const username = getUsername();
         
