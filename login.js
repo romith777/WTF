@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             } else {
             alert('Error signing up');
             }
-            console.log(result);
+            // console.log(result);
         } catch (err) {
             console.error(err);
             alert('Server error');

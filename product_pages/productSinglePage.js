@@ -329,7 +329,7 @@ window.decreaseQuantity = function() {
 }
 
 window.addToCart = function() {
-    console.log(currentProduct);
+    // console.log(currentProduct);
     if (!currentProduct) return;
     
     const productId = currentProduct.id;
@@ -348,7 +348,7 @@ window.addToCart = function() {
     
     localStorage.setItem('cart', JSON.stringify(freshCart));
     cart = freshCart;
-    console.log('Updated cart:', freshCart);
+    // console.log('Updated cart:', freshCart);
     
     let totalCartCount = 0;
     Object.keys(freshCart).forEach(key => {
@@ -476,11 +476,11 @@ function sendCartToBackend(cartToSend) {
     }
     
     const cartItems = [];
-    console.log("cartToSend",cartToSend);
+    // console.log("cartToSend",cartToSend);
     Object.keys(cartToSend).forEach(cartKey => {
         const item = cartToSend[cartKey];
-        console.log('Cart item to send:', cartKey);
-        console.log("inside sendcart",item);
+        // console.log('Cart item to send:', cartKey);
+        // console.log("inside sendcart",item);
         cartItems.push({
             cartKey: cartKey,
             id: item.id,
@@ -494,9 +494,9 @@ function sendCartToBackend(cartToSend) {
             selectedSize: item.selectedSize
         });
     });
-    console.log("cartItems",cartItems);
+    // console.log("cartItems",cartItems);
     const payload = { username, items: cartItems };
-    console.log("payload",payload);
+    // console.log("payload",payload);
     fetch(`${API_URI}/cart`, {
         method: 'POST',
         headers: {

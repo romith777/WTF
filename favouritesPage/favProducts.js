@@ -22,7 +22,7 @@ function renderProducts(products){
     let innerHtml = "";
     
     if(!products || products.length === 0){
-        console.log("No products found");
+        // console.log("No products found");
         innerHtml = `
             <div class="no-fav-container">
                 <div class="no-fav">
@@ -169,7 +169,7 @@ async function sendFavoritesToBackend() {
     const username = getUsername();
     
     if (!username) {
-        console.log("No user logged in, skipping favorites save");
+        // console.log("No user logged in, skipping favorites save");
         return false;
     }
     
@@ -188,14 +188,14 @@ async function sendFavoritesToBackend() {
         });
     });
     
-    console.log("Sending favorites to backend:", { username, itemCount: favItems.length });
+    // console.log("Sending favorites to backend:", { username, itemCount: favItems.length });
 
     const payload = { username, items: favItems };
     const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
     const url = `${API_URI}/favorites`;
 
     const ok = navigator.sendBeacon(url, blob);
-    console.log('sendBeacon returned', ok);
+    // console.log('sendBeacon returned', ok);
     return ok;
 }
 
@@ -203,13 +203,13 @@ async function fetchFavoritesFromBackend() {
     const username = getUsername();
     
     if (!username) {
-        console.log("No user logged in, can't fetch favorites");
+        // console.log("No user logged in, can't fetch favorites");
         return null;
     }
 
     try {
         const url = `http://127.0.0.1:3000/favorites/${username}`;
-        console.log("Fetching favorites from:", url);
+        // console.log("Fetching favorites from:", url);
         
         const response = await fetch(url, {
             method: 'GET',
@@ -224,7 +224,7 @@ async function fetchFavoritesFromBackend() {
         }
 
         const data = await response.json();
-        console.log('Favorites fetched from backend:', data);
+        // console.log('Favorites fetched from backend:', data);
         return data.items || [];
     } catch (error) {
         console.error('Error fetching favorites:', error);
@@ -233,13 +233,13 @@ async function fetchFavoritesFromBackend() {
 }
 
 function mergeFavoritesData(backendItems) {
-    console.log('Merging favorites data. Backend items:', backendItems);
+    // console.log('Merging favorites data. Backend items:', backendItems);
     
     const localFavList = JSON.parse(localStorage.getItem('favList')) || {};
-    console.log('Local favorites before merge:', localFavList);
+    // console.log('Local favorites before merge:', localFavList);
     
     if (!backendItems || backendItems.length === 0) {
-        console.log('No backend favorites data, using local');
+        // console.log('No backend favorites data, using local');
         favList = localFavList;
         renderProducts(Object.values(favList));
         return;
@@ -256,7 +256,7 @@ function mergeFavoritesData(backendItems) {
         }
     });
 
-    console.log('Favorites after merge:', favList);
+    // console.log('Favorites after merge:', favList);
 
     // Save merged favorites
     localStorage.setItem('favList', JSON.stringify(favList));
@@ -268,7 +268,7 @@ function mergeFavoritesData(backendItems) {
     });
     localStorage.setItem('favCount', favCount);
     
-    console.log('Favorites merged. Total items:', favCount);
+    // console.log('Favorites merged. Total items:', favCount);
     
     // Re-render
     renderProducts(Object.values(favList));
@@ -284,13 +284,13 @@ async function initializeFavorites() {
     const username = getUsername();
     
     if (username) {
-        console.log("User logged in:", username);
-        console.log("Fetching favorites from backend...");
+        // console.log("User logged in:", username);
+        // console.log("Fetching favorites from backend...");
         
         const backendItems = await fetchFavoritesFromBackend();
         mergeFavoritesData(backendItems);
     } else {
-        console.log("No user logged in");
+        // console.log("No user logged in");
         favList = JSON.parse(localStorage.getItem('favList')) || {};
         renderProducts(Object.values(favList));
     }

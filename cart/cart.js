@@ -68,7 +68,7 @@ function updateCheckoutSummary() {
 
 function renderProducts(cartObj){
     let innerHtml = "";
-    console.log('Rendering cart:', cartObj);
+    // console.log('Rendering cart:', cartObj);
     if(!cartObj || Object.keys(cartObj).length === 0){
         innerHtml = `
             <div class="no-cart-div">
@@ -249,7 +249,7 @@ async function fetchCartFromBackend() {
     }
 
     try {
-        const url = `http://127.0.0.1:3000/cart/${username}`;
+        const url = `${API_URI}/cart/${username}`;
         
         const response = await fetch(url, {
             method: 'GET',
@@ -281,7 +281,7 @@ async function initializeCart() {
     
     if (username) {
         const backendItems = await fetchCartFromBackend();
-        console.log('Fetched backend cart items:', backendItems);
+        // console.log('Fetched backend cart items:', backendItems);
         
         cart = {};
         
@@ -289,7 +289,7 @@ async function initializeCart() {
             backendItems.forEach(item => {
                 const cartKey = item.cartKey;
                 const size = item.selectedSize;
-                console.log(cartKey, size);
+                // console.log(cartKey, size);
                 if (cartKey && size && item.id) {
                     cart[cartKey] = {
                         id: item.id,
@@ -310,7 +310,7 @@ async function initializeCart() {
     }
     
     localStorage.setItem('cart', JSON.stringify(cart));
-    console.log('Initialized cart:', cart);
+    // console.log('Initialized cart:', cart);
     updateCartCount();
     renderProducts(cart);
 }

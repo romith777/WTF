@@ -22,7 +22,7 @@ async function fetchProducts() {
     
     try {
         const response = await fetch(`${API_URI}/products`);
-        console.log("Fetching products from:", `${API_URI}/products`);
+        // console.log("Fetching products from:", `${API_URI}/products`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

@@ -6,6 +6,7 @@
   <title>My Account - WTPRINTS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="user.css">
 </head>
@@ -14,8 +15,9 @@
     <a href="../index.html"><div class="logo">WTPRINTS</div></a>
     <nav>
       <a href="../index.html">Home</a>
+      <a href="../product_pages/productsPage.html">Products</a>
       <a href="../cart/cart.html">Cart</a>
-      <a href="./orders.html">Orders</a>
+      <a href="../favouritesPage/favPage.html">Favorites</a>
     </nav>
   </header>
 
@@ -24,44 +26,57 @@
       <aside class="sidebar">
         <div class="avatar-wrap">
           <div class="avatar-circle" id="avatar-initial">?</div>
+          <div class="sidebar-username" id="sidebar-username">Loading...</div>
         </div>
-        <div class="sidebar-username" id="sidebar-username">Loading...</div>
-        <div class="avatar-divider"></div>
 
         <nav class="side-menu">
-          <a class="menu-item active" href="#">ACCOUNT</a>
-          <a class="menu-item" href="#">SETTINGS</a>
-          <a class="menu-item" href="#">PASSWORD</a>
-          <a class="menu-item" href="../cart/cart.html">CART</a>
-          <a class="menu-item" href="#">FAVOURITES</a>
+          <a class="menu-item" href="#">Account</a>
+          <a class="menu-item" href="#">Orders</a>
+          <a class="menu-item" href="../cart/cart.html">Cart</a>
+          <a class="menu-item" href="../favouritesPage/favPage.html">Favorites</a>
         </nav>
         
         <button class="logout-btn" id="logoutBtn">Logout</button>
       </aside>
 
       <section class="account-main">
-        <h1 class="account-title">ACCOUNT</h1>
+        <h1 class="account-title">My Account</h1>
         <p class="account-sub">Manage your personal information and preferences</p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Orders</div>
+            <div class="stat-value" id="stat-orders">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">In Cart</div>
+            <div class="stat-value" id="stat-cart">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Favorites</div>
+            <div class="stat-value" id="stat-favorites">0</div>
+          </div>
+        </div>
 
         <div class="account-fields">
           <div class="field">
-            <label class="field-label">Name</label>
+            <label class="field-label">Full Name</label>
             <div class="field-value" id="display-name">Loading...</div>
           </div>
 
           <div class="field">
-            <label class="field-label">Email</label>
+            <label class="field-label">Email Address</label>
             <div class="field-value" id="display-email">Loading...</div>
           </div>
 
           <div class="field">
-            <label class="field-label">Status</label>
-            <div class="status-badge">Active</div>
+            <label class="field-label">Delivery Address</label>
+            <div class="field-value empty" id="display-address">Not set yet</div>
           </div>
 
           <div class="field">
-            <label class="field-label">Address</label>
-            <div class="field-value empty" id="display-address">Not set</div>
+            <label class="field-label">Phone Number</label>
+            <div class="field-value empty" id="display-phone">Not set yet</div>
           </div>
         </div>
       </section>

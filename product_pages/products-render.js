@@ -50,16 +50,16 @@ function startApp() {
 
     // Check if products are loaded
     if (tees.length === 0 && hoodies.length === 0 && cargos.length === 0) {
-        console.log('Waiting for products to load...');
+        // console.log('Waiting for products to load...');
         // Wait for products loaded event
         window.addEventListener('productsLoaded', () => {
-            console.log('Products loaded event received, initializing app...');
+            // console.log('Products loaded event received, initializing app...');
             initializeProducts();
             initializeApp();
         });
     } else {
         // Products already loaded
-        console.log('Products already loaded, initializing app...');
+        // console.log('Products already loaded, initializing app...');
         initializeProducts();
         initializeApp();
     }

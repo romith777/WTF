@@ -2,10 +2,9 @@
 const user = JSON.parse(localStorage.getItem('wt_user'));
 
 if(!user){
-  window.location.href = '/login.html';
+  window.location.href = '../login.html';
 } else {
   localStorage.setItem('username', user.name);
-  console.log(user);
   
   // Update profile information
   document.getElementById('sidebar-username').textContent = user.name;
@@ -19,15 +18,24 @@ if(!user){
   }
 }
 
+// Update stats
+function updateStats() {
+  const favCount = localStorage.getItem('favCount') || 0;
+  const cartCount = localStorage.getItem('cartCount') || 0;
+  
+  document.getElementById('stat-orders').textContent = '0';
+  document.getElementById('stat-cart').textContent = cartCount;
+  document.getElementById('stat-favorites').textContent = favCount;
+}
+
+updateStats();
+
 // Logout
 document.getElementById('logoutBtn').addEventListener('click', ()=>{
-  // Confirm logout
   if(confirm('Are you sure you want to logout?')) {
     localStorage.removeItem('wt_user');
-    localStorage.setItem('login-token', false);
+    localStorage.setItem('login-token', 'false');
     localStorage.removeItem('username');
-    localStorage.removeItem('cart');
-    localStorage.removeItem('cartCount');
-    window.location.href = '/login.html';
+    window.location.href = '../login.html';
   }
 });

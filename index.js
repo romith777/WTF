@@ -105,7 +105,7 @@ if(urlParams.get('login') === 'success'){
         name: urlParams.get('wt_user'),
         email: urlParams.get('email')
     }));
-    console.log(JSON.parse(localStorage.getItem('wt_user')));
+    // console.log(JSON.parse(localStorage.getItem('wt_user')));
     document.querySelector(".login-token").href = "./user/user.html";
     document.querySelector(".login-token-info").innerHTML = "My Account";
 }
