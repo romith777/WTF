@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = API_URI || 3000;
+const PORT = process.env.PORT || 3000;  // ✅ FIXED: Was API_URI
 
 // Load models
 let Cart = null;
@@ -59,8 +59,18 @@ const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favor
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve static files
-app.use(express.static(path.join(__dirname)));
+// ✅ FIXED: Serve static files from parent directory (root folder)
+app.use(express.static(path.join(__dirname, '..')));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date(),
+    message: 'Backend is running!'
+  });
+});
 
 // API Routes
 app.get('/products', async (req, res) => {
@@ -172,17 +182,6 @@ app.get('/favorites/:username', async (req, res) => {
     res.status(500).json({ error: 'server error' });
   }
 });
-
-// Add this AFTER all your other routes
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-    timestamp: new Date(),
-    message: 'Backend is running!'
-  });
-});
-
 
 // Only listen locally
 if (process.env.NODE_ENV !== 'production') {
