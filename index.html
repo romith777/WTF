@@ -444,5 +444,31 @@
         </footer>
     </div>
     <script src="index.js"></script>
+    <script>
+        // Test backend connection on page load
+        async function checkBackendConnection() {
+        const API_URL = window.location.origin;
+        
+        try {
+            const response = await fetch(`${API_URL}/health`);
+            const data = await response.json();
+            
+            console.log('✅ Backend Status:', data);
+            console.log('✅ MongoDB Status:', data.mongodb);
+            
+            if (data.mongodb === 'connected') {
+            console.log('✅ DATABASE CONNECTED!');
+            } else {
+            console.error('❌ DATABASE NOT CONNECTED!');
+            }
+        } catch (error) {
+            console.error('❌ Backend not reachable:', error);
+        }
+        }
+
+        // Call it when page loads
+        checkBackendConnection();
+
+    </script>
 </body>
 </html>

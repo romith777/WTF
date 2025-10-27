@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = API_URI || 3000;
 
 // Load models
 let Cart = null;
@@ -172,6 +172,17 @@ app.get('/favorites/:username', async (req, res) => {
     res.status(500).json({ error: 'server error' });
   }
 });
+
+// Add this AFTER all your other routes
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date(),
+    message: 'Backend is running!'
+  });
+});
+
 
 // Only listen locally
 if (process.env.NODE_ENV !== 'production') {
