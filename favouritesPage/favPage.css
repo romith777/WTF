@@ -228,7 +228,7 @@ body{
     .js-favourites-body{
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 15px;
-        margin-top: 120px;
+        margin-top: 125px;
         padding: 15px;
     }
     
@@ -255,6 +255,7 @@ body{
 
 @media (max-width: 480px) {
     .js-favourites-body{
+        margin-top: 170px;
         grid-template-columns: 1fr;
     }
     
