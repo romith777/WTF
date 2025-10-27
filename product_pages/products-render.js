@@ -399,7 +399,7 @@ function initializeApp() {
         }
     }
 
-    
+
 
     // Cart functionality
     function saveCart(){
@@ -533,3 +533,5 @@ function initializeApp() {
 
 // Start the app when DOM is ready
 document.addEventListener('DOMContentLoaded', startApp);
+
+console.log(JSON.parse(localStorage.getItem('cart')));
