@@ -13,6 +13,12 @@ function formatCurrency(priceCents){
     return (priceCents/100).toFixed(2);
 }
 
+// Mobile menu toggle
+function toggleMobileMenu(){
+    const navDropDown = document.getElementById('navDropDown');
+    navDropDown.classList.toggle('open');
+}
+
 function getProductFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');

@@ -36,6 +36,12 @@ function initializeProducts() {
     });
 }
 
+// Mobile menu toggle
+function toggleMobileMenu(){
+    const navDropDown = document.getElementById('navDropDown');
+    navDropDown.classList.toggle('open');
+}
+
 // Shuffle array for random suggestions
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);

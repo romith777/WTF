@@ -12,6 +12,23 @@
     margin-right: auto;
 }
 
+/* Mobile Menu Toggle */
+.mobile-menu-toggle{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.mobile-menu-toggle span{
+    width: 25px;
+    height: 3px;
+    background-color: #ee0652;
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
 /* Filter Section */
 .filter-section{
     width: 280px;
@@ -485,6 +502,9 @@
         height: 35px;
         font-size: 20px;
     }
+    .mobile-menu-toggle{
+        display: flex;
+    }
 }
 
 @media (max-width: 480px) {
@@ -498,5 +518,8 @@
     
     .related-products-slider{
         padding: 0 35px;
+    }
+    .nav-components > a:first-child{
+        display: none;
     }
 }

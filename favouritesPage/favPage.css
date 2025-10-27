@@ -9,6 +9,23 @@ body{
     background-color: #f8f8f8;
 }
 
+/* Mobile Menu Toggle */
+.mobile-menu-toggle{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.mobile-menu-toggle span{
+    width: 25px;
+    height: 3px;
+    background-color: #ee0652;
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
 .js-favourites-body{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -231,6 +248,9 @@ body{
         width: 100px;
         height: 100px;
     }
+    .mobile-menu-toggle{
+        display: flex;
+    }
 }
 
 @media (max-width: 480px) {
@@ -240,5 +260,8 @@ body{
     
     .browse-card-img{
         height: 300px;
+    }
+    .nav-components > a:first-child{
+        display: none;
     }
 }
