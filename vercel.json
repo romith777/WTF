@@ -1,15 +1,15 @@
 {
   "version": 2,
   "builds": [
-    { "src": "server.js", "use": "@vercel/node" },
+    { "src": "backend/server.js", "use": "@vercel/node" },
     { "src": "**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/products", "dest": "server.js" },
-    { "src": "/signup", "dest": "server.js" },
-    { "src": "/login", "dest": "server.js" },
-    { "src": "/cart(.*)", "dest": "server.js" },
-    { "src": "/favorites(.*)", "dest": "server.js" },
+    { "src": "/products", "dest": "backend/server.js" },
+    { "src": "/signup", "dest": "backend/server.js" },
+    { "src": "/login", "dest": "backend/server.js" },
+    { "src": "/cart(.*)", "dest": "backend/server.js" },
+    { "src": "/favorites(.*)", "dest": "backend/server.js" },
     { "src": "/(.*)", "dest": "$1" }
   ]
 }
