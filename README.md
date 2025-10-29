@@ -1,66 +1,75 @@
-# 🛍️ WTPRINTS: E-Commerce Website  
+## WTPRINTS: Full-Stack E-Commerce Website-https://wtf-murex-pi.vercel.app/  
 
-WTPRINTS is a fully functional e-commerce platform built with **HTML, CSS, and JavaScript**, designed to sell branded clothing. It provides an intuitive shopping experience with product browsing, cart management, and user authentication. While payment and order tracking features are not yet implemented, the system is structured to allow future integration.  
-
----
-
-## 🚀 Features  
-
-- **Product Catalog** – Browse branded clothing items with clean UI  
-- **Cart System** – Add, remove, and update items in the shopping cart  
-- **User Login System** – Simple authentication to manage user sessions  
-- **Responsive Design** – Works seamlessly on desktop and mobile  
-- **Dynamic UI Updates** – Cart and product changes handled in real time  
-- *(Planned)* Payment integration and order tracking system  
+**WTPRINTS** is a full-stack e-commerce platform built using **HTML, CSS, JavaScript (Frontend)** and **Node.js with Express & MongoDB (Backend)**.  
+It enables users to browse products, manage their cart, and log in securely — forming a scalable foundation for a branded clothing store.  
 
 ---
 
-## ⚙️ How It Works  
+## Features  
 
-### Product Display  
-Products are listed dynamically with images, descriptions, and pricing.  
+- **Product Catalog** – Browse and view branded clothing with descriptions and pricing  
+- **Cart System** – Add, remove, and update items with persistent storage  
+- **User Authentication** – Secure login and signup with encrypted passwords  
+- **Database Integration** – MongoDB stores users, products, and cart data  
+- **RESTful API Architecture** – Clean separation between frontend and backend  
+- **Responsive Design** – Works seamlessly on both desktop and mobile  
+- **CORS Enabled** – Secure communication between frontend and backend  
+- *(Planned)* Payment gateway and order tracking integration  
 
-### Cart Management  
-Users can add items to the cart, update quantities, and remove products.  
+---
+
+## How It Works  
+
+### Frontend  
+Built with **HTML, CSS, and JavaScript**, it provides a dynamic and responsive shopping interface.  
+
+### Backend  
+Powered by **Node.js** and **Express**, the backend manages user authentication, product data, and cart operations via REST APIs.  
+
+### Database  
+Uses **MongoDB** with **Mongoose** for storing users, products, and cart details.  
 
 ### Authentication  
-Basic login and session handling allow users to maintain their cart across browsing sessions.  
-
-### Future Integration  
-Payment gateway and order tracking will be added in upcoming updates.  
+- User signup/login with **bcrypt** password hashing  
+- Secure session or token-based authentication  
+- Environment-based configuration using **dotenv**  
 
 ---
 
-## 🧰 Tech Stack  
+## Tech Stack  
 
 **Frontend:** HTML, CSS, JavaScript  
-**Planned Enhancements:** Backend (Node.js/Express or Django), Database (MongoDB/MySQL), Payment Gateway Integration  
+**Backend:** Node.js, Express.js  
+**Database:** MongoDB (Mongoose)  
+**Security:** bcrypt, dotenv, CORS  
+**Planned Hosting:** Render / Vercel / Netlify  
 
 ---
 
-## ✅ Requirements  
+## Requirements  
 
 - Modern web browser (Chrome, Firefox, Edge)  
 - Local environment or simple HTTP server (e.g., `live-server` or VS Code extension)  
 
 ---
 
-## 🔒 Security Note  
+## Security Note  
 
 Currently designed as a prototype for demonstration. Authentication is basic and not production-ready. Security enhancements (hashed passwords, session management, HTTPS) will be implemented in the backend version.  
 
 ---
 
-## 📌 Future Improvements  
+## Future Improvements  
 
-- Add payment gateway integration (Stripe/PayPal)  
-- Implement order tracking and invoice generation  
-- Connect to backend with database support  
-- Add product search & filtering  
-- Deploy on cloud hosting (Netlify, Vercel, or custom server)  
+- Integrate payment gateway (Stripe / PayPal)  
+- Add order tracking and invoice generation  
+- Enhance admin dashboard for product and order management  
+- Improve product search and filtering functionality  
+- Optimize performance and scalability for production  
+- Add analytics and customer insights dashboard  
 
 ---
 
-## 📄 License  
+## License  
 
 This project is licensed under the **MIT License**.  
