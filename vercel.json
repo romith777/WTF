@@ -11,6 +11,8 @@
     { "src": "/login", "dest": "backend/server.js" },
     { "src": "/api/cart(.*)", "dest": "backend/server.js" },
     { "src": "/api/favorites(.*)", "dest": "backend/server.js" },
-    { "src": "/(.*)", "dest": "$1" }
+    { "src": "/(.*)", "dest": "$1" },
+    { "src": "/request-otp", "dest": "backend/server.js" },
+    { "src": "/verify-otp", "dest": "backend/server.js" }
   ]
 }
