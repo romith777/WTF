@@ -77,15 +77,26 @@
                   <div><p style="color:grey;font-size:20px;">Join us to be a part of our family.</p></div>
                 </div>
 
-                <!-- SIGNUP FORM: action -> /signup, method -> POST, names added -->
                 <div id="signup-message" class="signup-message" style="display:none;">
-                    Signup successful! Please login.
+                  Message here
                 </div>
-                <form id="signupForm" class="input-holder" style="gap:20px;">
+
+                <!-- Step 1: Request OTP -->
+                <form id="requestOtpForm" class="input-holder" style="gap:20px;">
                   <input name="username" type="text" placeholder="Name" required>
                   <input name="email" type="email" placeholder="Email" required>
                   <input name="password" type="password" placeholder="Password" required>
-                  <button class="login-button" type="submit">Signup</button>
+                  <button class="login-button" type="submit">Send OTP</button>
+                </form>
+
+                <!-- Step 2: Verify OTP (hidden initially) -->
+                <form id="verifyOtpForm" class="input-holder" style="gap:20px;display:none;">
+                  <div style="text-align:center;">
+                    <p style="color:#666;">We've sent a verification code to your email</p>
+                  </div>
+                  <input name="otp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" required pattern="[0-9]{6}">
+                  <button class="login-button" type="submit">Verify & Signup</button>
+                  <button class="login-button" type="button" id="resendOtpBtn" style="background:white;color:#ee0652;border:2px solid #ee0652;">Resend OTP</button>
                 </form>
               </div>
 

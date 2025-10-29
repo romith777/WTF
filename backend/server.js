@@ -12,6 +12,18 @@ const PORT = process.env.PORT || 3000;  // ✅ FIXED: Was API_URI
 let Cart = null;
 let Product = null;
 
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+// OTP Schema
+let OTP = null;
+try {
+  OTP = require('./models/otpSchema');
+  console.log('OTP model loaded.');
+} catch (err) {
+  console.warn('Warning: could not load ./models/otpSchema. OTP functionality will be skipped.');
+}
+
 try {
   Cart = require('./models/cartSchema');
 } catch (err) {
@@ -180,6 +192,152 @@ app.get('/api/favorites/:username', async (req, res) => {
     res.json({ username: req.params.username, items: favData?.items || [] });
   } catch (err) {
     res.status(500).json({ error: 'server error' });
+  }
+});
+
+// Email transporter setup
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
+  }
+});
+
+// Generate 6-digit OTP
+function generateOTP() {
+  return crypto.randomInt(100000, 999999).toString();
+}
+
+// Send OTP Email
+async function sendOTPEmail(email, otp) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'WTPRINTS - Email Verification OTP',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: 'League Spartan', Arial, sans-serif; background-color: #f8f8f8; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+          .header { text-align: center; margin-bottom: 30px; }
+          .logo { font-size: 32px; font-weight: 800; color: #ee0652; letter-spacing: 1px; }
+          .otp-box { background: linear-gradient(135deg, #ee0652, #ff0066); color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0; }
+          .otp-code { font-size: 42px; font-weight: 800; letter-spacing: 8px; margin: 10px 0; }
+          .message { color: #666; line-height: 1.8; font-size: 16px; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">WTPRINTS</div>
+          </div>
+          <p class="message">Thank you for signing up with WTPRINTS! To complete your registration, please verify your email address.</p>
+          <div class="otp-box">
+            <p style="margin: 0; font-size: 16px;">Your Verification Code</p>
+            <div class="otp-code">${otp}</div>
+            <p style="margin: 0; font-size: 14px;">Valid for 5 minutes</p>
+          </div>
+          <p class="message">Enter this code on the verification page to activate your account. If you didn't request this code, please ignore this email.</p>
+          <div class="footer">
+            <p>© 2025 WTPRINTS. All rights reserved.</p>
+            <p>Stay unique. Stay printed.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error('Error sending OTP email:', error);
+    return false;
+  }
+}
+
+// Route: Request OTP (Step 1 of signup)
+app.post('/request-otp', async (req, res) => {
+  try {
+    const { email, username } = req.body;
+    
+    if (!email || !username) {
+      return res.status(400).json({ status: 'error', message: 'Email and username required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.json({ status: 'exists', message: 'Username or email already exists' });
+    }
+
+    // Generate OTP
+    const otp = generateOTP();
+
+    // Store OTP in database
+    if (OTP) {
+      // Delete any existing OTP for this email
+      await OTP.deleteMany({ email });
+      
+      // Create new OTP
+      await OTP.create({ email, otp });
+    }
+
+    // Send OTP email
+    const emailSent = await sendOTPEmail(email, otp);
+
+    if (emailSent) {
+      res.json({ status: 'success', message: 'OTP sent to email' });
+    } else {
+      res.status(500).json({ status: 'error', message: 'Failed to send OTP' });
+    }
+  } catch (err) {
+    console.error('Request OTP error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
+});
+
+// Route: Verify OTP and Complete Signup (Step 2 of signup)
+app.post('/verify-otp', async (req, res) => {
+  try {
+    const { email, otp, username, password } = req.body;
+
+    if (!email || !otp || !username || !password) {
+      return res.status(400).json({ status: 'error', message: 'All fields required' });
+    }
+
+    // Verify OTP
+    if (OTP) {
+      const otpRecord = await OTP.findOne({ email, otp });
+      
+      if (!otpRecord) {
+        return res.json({ status: 'invalid', message: 'Invalid or expired OTP' });
+      }
+
+      // OTP is valid, delete it
+      await OTP.deleteOne({ _id: otpRecord._id });
+    }
+
+    // Check if user already exists (double check)
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.json({ status: 'exists', message: 'Username or email already exists' });
+    }
+
+    // Create user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
+
+    res.json({ status: 'success', message: 'Account created successfully' });
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
   }
 });
 
