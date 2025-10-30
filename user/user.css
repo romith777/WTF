@@ -146,12 +146,21 @@ main{
   color: var(--text-dark);
   background: transparent;
   border-left: 3px solid transparent;
+  transition: all 0.3s;
+  cursor: pointer;
 }
 
 .menu-item:hover{
   background: rgba(238, 6, 82, 0.05);
   color: var(--primary);
   border-left-color: var(--primary);
+}
+
+.menu-item.active{
+  background: rgba(238, 6, 82, 0.08);
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 700;
 }
 
 /* Logout button at bottom */
@@ -167,6 +176,7 @@ main{
   font-size: 15px;
   cursor: pointer;
   font-family: 'League Spartan', sans-serif;
+  transition: background 0.3s;
 }
 
 .logout-btn:hover{
@@ -180,6 +190,15 @@ main{
   padding: 50px;
   border-radius: 12px;
   min-width: 0;
+}
+
+/* Content Sections */
+.content-section{
+  display: none;
+}
+
+.content-section.active{
+  display: block;
 }
 
 .account-title{
@@ -279,6 +298,122 @@ main{
   font-style: italic;
 }
 
+/* Message Box */
+.message-box{
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+}
+
+.message-box.success{
+  background-color: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+
+.message-box.error{
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 2px solid #f5c6cb;
+}
+
+/* Password Form */
+.password-form{
+  max-width: 600px;
+}
+
+.form-group{
+  margin-bottom: 28px;
+}
+
+.form-label{
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.form-input{
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'League Spartan', sans-serif;
+  transition: border-color 0.3s;
+  background: white;
+}
+
+.form-input:focus{
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-hint{
+  display: block;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.submit-btn{
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'League Spartan', sans-serif;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover{
+  background: var(--primary-dark);
+}
+
+/* Empty State */
+.empty-state{
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon{
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.empty-text{
+  font-size: 18px;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+
+.shop-now-btn{
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.shop-now-btn:hover{
+  background: var(--primary-dark);
+}
+
 /* Responsive */
 @media (max-width: 980px){
   .account-wrapper{
@@ -304,10 +439,17 @@ main{
     padding: 14px 16px;
     border-left: none;
     border-radius: 8px;
+    border-bottom: 3px solid transparent;
   }
   
   .menu-item:hover{
     border-left: none;
+    border-bottom-color: var(--primary);
+  }
+
+  .menu-item.active{
+    border-left: none;
+    border-bottom-color: var(--primary);
   }
   
   .logout-btn{
@@ -361,5 +503,9 @@ main{
   
   .field-value{
     font-size: 16px;
+  }
+
+  .password-form{
+    max-width: 100%;
   }
 }

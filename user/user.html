@@ -31,8 +31,9 @@
         </div>
 
         <nav class="side-menu">
-          <a class="menu-item" href="#">Account</a>
-          <a class="menu-item" href="#">Orders</a>
+          <a class="menu-item active" href="#" data-section="overview">Account</a>
+          <a class="menu-item" href="#" data-section="change-password">Change Password</a>
+          <a class="menu-item" href="#" data-section="orders">Orders</a>
           <a class="menu-item" href="../cart/cart.html">Cart</a>
           <a class="menu-item" href="../favouritesPage/favPage.html">Favorites</a>
         </nav>
@@ -41,43 +42,86 @@
       </aside>
 
       <section class="account-main">
-        <h1 class="account-title">My Account</h1>
-        <p class="account-sub">Manage your personal information and preferences</p>
+        <!-- OVERVIEW SECTION -->
+        <div class="content-section active" id="overview-section">
+          <h1 class="account-title">My Account</h1>
+          <p class="account-sub">Manage your personal information and preferences</p>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Orders</div>
-            <div class="stat-value" id="stat-orders">0</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Orders</div>
+              <div class="stat-value" id="stat-orders">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">In Cart</div>
+              <div class="stat-value" id="stat-cart">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Favorites</div>
+              <div class="stat-value" id="stat-favorites">0</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">In Cart</div>
-            <div class="stat-value" id="stat-cart">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Favorites</div>
-            <div class="stat-value" id="stat-favorites">0</div>
+
+          <div class="account-fields">
+            <div class="field">
+              <label class="field-label">Full Name</label>
+              <div class="field-value" id="display-name">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Email Address</label>
+              <div class="field-value" id="display-email">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Delivery Address</label>
+              <div class="field-value empty" id="display-address">Not set yet</div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Phone Number</label>
+              <div class="field-value empty" id="display-phone">Not set yet</div>
+            </div>
           </div>
         </div>
 
-        <div class="account-fields">
-          <div class="field">
-            <label class="field-label">Full Name</label>
-            <div class="field-value" id="display-name">Loading...</div>
-          </div>
+        <!-- CHANGE PASSWORD SECTION -->
+        <div class="content-section" id="change-password-section">
+          <h1 class="account-title">Change Password</h1>
+          <p class="account-sub">Update your password to keep your account secure</p>
 
-          <div class="field">
-            <label class="field-label">Email Address</label>
-            <div class="field-value" id="display-email">Loading...</div>
-          </div>
+          <div id="password-message" class="message-box" style="display:none;"></div>
 
-          <div class="field">
-            <label class="field-label">Delivery Address</label>
-            <div class="field-value empty" id="display-address">Not set yet</div>
-          </div>
+          <form id="changePasswordForm" class="password-form">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" name="currentPassword" class="form-input" placeholder="Enter current password" required>
+            </div>
 
-          <div class="field">
-            <label class="field-label">Phone Number</label>
-            <div class="field-value empty" id="display-phone">Not set yet</div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" name="newPassword" id="newPassword" class="form-input" placeholder="Enter new password" required minlength="8">
+              <small class="form-hint">Must be at least 8 characters</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" placeholder="Confirm new password" required minlength="8">
+            </div>
+
+            <button type="submit" class="submit-btn">Change Password</button>
+          </form>
+        </div>
+
+        <!-- ORDERS SECTION -->
+        <div class="content-section" id="orders-section">
+          <h1 class="account-title">My Orders</h1>
+          <p class="account-sub">View and track your order history</p>
+
+          <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <p class="empty-text">You haven't placed any orders yet</p>
+            <a href="../product_pages/productsPage.html" class="shop-now-btn">Start Shopping</a>
           </div>
         </div>
       </section>

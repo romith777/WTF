@@ -238,7 +238,7 @@ app.get('/api/favorites/:username', async (req, res) => {
   }
 });
 
-// ✅ CHANGED: Email transporter setup using MAILUSER and MAILPASS
+// Email transporter setup using MAILUSER and MAILPASS
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -254,7 +254,6 @@ function generateOTP() {
 
 // Send OTP Email with detailed error logging
 async function sendOTPEmail(email, otp) {
-  // Check if email credentials are configured
   if (!process.env.MAILUSER || !process.env.MAILPASS) {
     console.error('Email credentials not configured. MAILUSER:', process.env.MAILUSER ? 'set' : 'missing', 'MAILPASS:', process.env.MAILPASS ? 'set' : 'missing');
     return false;
@@ -334,7 +333,6 @@ async function sendWelcomeEmail(email, username) {
           .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
           .header { text-align: center; margin-bottom: 30px; }
           .logo { font-size: 32px; font-weight: 800; color: #ee0652; letter-spacing: 1px; }
-          .success-icon { text-align: center; font-size: 60px; margin: 20px 0; }
           .welcome-box { background: linear-gradient(135deg, #ee0652, #ff0066); color: white; padding: 30px; border-radius: 10px; text-align: center; margin: 30px 0; }
           .welcome-title { font-size: 28px; font-weight: 800; margin: 10px 0; }
           .message { color: #666; line-height: 1.8; font-size: 16px; margin: 15px 0; }
@@ -343,10 +341,7 @@ async function sendWelcomeEmail(email, username) {
           .features h3 { color: #333; margin-bottom: 15px; }
           .features ul { list-style: none; padding: 0; }
           .features li { padding: 8px 0; color: #666; }
-          .features li:before { content: "✓ "; color: #ee0652; font-weight: bold; margin-right: 10px; }
           .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 14px; }
-          .social-links { margin: 20px 0; }
-          .social-links a { color: #ee0652; text-decoration: none; margin: 0 10px; }
         </style>
       </head>
       <body>
@@ -354,23 +349,17 @@ async function sendWelcomeEmail(email, username) {
           <div class="header">
             <div class="logo">WTPRINTS</div>
           </div>
-
-          <div class="success-icon">✅</div>
-
           <div class="welcome-box">
             <div class="welcome-title">Welcome to WTPRINTS!</div>
             <p style="margin: 10px 0; font-size: 18px;">Hey ${username}, your account is now verified!</p>
           </div>
-
           <p class="message">
             Thank you for joining the WTPRINTS family! We're thrilled to have you on board. 
             Your email has been successfully verified, and your account is ready to go.
           </p>
-
           <div style="text-align: center;">
             <a href="${process.env.WEBSITE_URL || 'https://wtprints.vercel.app'}/login.html" class="button">Start Shopping Now</a>
           </div>
-
           <div class="features">
             <h3>What You Can Do Now:</h3>
             <ul>
@@ -381,20 +370,12 @@ async function sendWelcomeEmail(email, username) {
               <li>Get exclusive member-only deals and early access</li>
             </ul>
           </div>
-
           <p class="message">
             If you have any questions or need assistance, our support team is here to help. 
             Simply reply to this email or visit our help center.
           </p>
-
           <div class="footer">
-            <p style="margin-bottom: 15px;"><strong>Stay Connected</strong></p>
-            <div class="social-links">
-              <a href="#">Instagram</a> | 
-              <a href="#">Facebook</a> | 
-              <a href="#">Twitter</a>
-            </div>
-            <p style="margin-top: 20px;">© 2025 WTPRINTS. All rights reserved.</p>
+            <p>© 2025 WTPRINTS. All rights reserved.</p>
             <p style="margin-top: 10px;">Stay unique. Stay printed.</p>
           </div>
         </div>
@@ -414,7 +395,137 @@ async function sendWelcomeEmail(email, username) {
   }
 }
 
+// ✅ NEW: Send Password Changed Confirmation Email
+async function sendPasswordChangedEmail(email, username) {
+  if (!process.env.MAILUSER || !process.env.MAILPASS) {
+    console.error('Email credentials not configured');
+    return false;
+  }
 
+  const mailOptions = {
+    from: process.env.MAILUSER,
+    to: email,
+    subject: 'WTPRINTS - Password Changed Successfully',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: 'League Spartan', Arial, sans-serif; background-color: #f8f8f8; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+          .header { text-align: center; margin-bottom: 30px; }
+          .logo { font-size: 32px; font-weight: 800; color: #ee0652; letter-spacing: 1px; }
+          .success-icon { text-align: center; font-size: 60px; margin: 20px 0; color: #4CAF50; }
+          .content-box { background: #f9f9f9; padding: 25px; border-radius: 10px; margin: 30px 0; border-left: 4px solid #4CAF50; }
+          .message { color: #666; line-height: 1.8; font-size: 16px; margin: 15px 0; }
+          .warning-box { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0; }
+          .button { display: inline-block; background: #ee0652; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">WTPRINTS</div>
+          </div>
+          <div class="content-box">
+            <h2 style="color: #333; margin: 0 0 15px 0;">Password Changed Successfully</h2>
+            <p style="color: #666; margin: 0;">Hey ${username}, your password has been updated successfully.</p>
+          </div>
+          <p class="message">
+            This is a confirmation that your WTPRINTS account password was recently changed. 
+            You can now log in using your new password.
+          </p>
+          <div style="text-align: center;">
+            <a href="${process.env.WEBSITE_URL || 'https://wtprints.vercel.app'}/login.html" class="button">Login to Your Account</a>
+          </div>
+          <div class="warning-box">
+            <p style="margin: 0; color: #856404;">
+              <strong>Didn't change your password?</strong><br>
+              If you did not make this change, please contact our support team immediately.
+            </p>
+          </div>
+          <p class="message">For your security, we recommend:</p>
+          <ul style="color: #666; line-height: 1.8;">
+            <li>Using a strong, unique password</li>
+            <li>Not sharing your password with anyone</li>
+            <li>Changing your password regularly</li>
+          </ul>
+          <div class="footer">
+            <p>© 2025 WTPRINTS. All rights reserved.</p>
+            <p style="margin-top: 10px;">Stay unique. Stay printed.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error('Error sending password changed email:', error);
+    return false;
+  }
+}
+
+// Send Password Reset Email
+async function sendPasswordResetEmail(email, otp) {
+  if (!process.env.MAILUSER || !process.env.MAILPASS) {
+    console.error('Email credentials not configured');
+    return false;
+  }
+
+  const mailOptions = {
+    from: process.env.MAILUSER,
+    to: email,
+    subject: 'WTPRINTS - Password Reset OTP',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: 'League Spartan', Arial, sans-serif; background-color: #f8f8f8; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+          .header { text-align: center; margin-bottom: 30px; }
+          .logo { font-size: 32px; font-weight: 800; color: #ee0652; letter-spacing: 1px; }
+          .otp-box { background: linear-gradient(135deg, #ee0652, #ff0066); color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0; }
+          .otp-code { font-size: 42px; font-weight: 800; letter-spacing: 8px; margin: 10px 0; }
+          .message { color: #666; line-height: 1.8; font-size: 16px; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">WTPRINTS</div>
+          </div>
+          <p class="message">You requested to reset your password. Use the code below to proceed:</p>
+          <div class="otp-box">
+            <p style="margin: 0; font-size: 16px;">Password Reset Code</p>
+            <div class="otp-code">${otp}</div>
+            <p style="margin: 0; font-size: 14px;">Valid for 5 minutes</p>
+          </div>
+          <p class="message">If you didn't request a password reset, please ignore this email and secure your account.</p>
+          <div class="footer">
+            <p>© 2025 WTPRINTS. All rights reserved.</p>
+            <p>Stay unique. Stay printed.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    return false;
+  }
+}
 
 // Route: Request OTP (Step 1 of signup)
 app.post('/request-otp', async (req, res) => {
@@ -425,25 +536,18 @@ app.post('/request-otp', async (req, res) => {
       return res.status(400).json({ status: 'error', message: 'Email and username required' });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return res.json({ status: 'exists', message: 'Username or email already exists' });
     }
 
-    // Generate OTP
     const otp = generateOTP();
 
-    // Store OTP in database
     if (OTP) {
-      // Delete any existing OTP for this email
       await OTP.deleteMany({ email });
-      
-      // Create new OTP
       await OTP.create({ email, otp });
     }
 
-    // Send OTP email
     const emailSent = await sendOTPEmail(email, otp);
 
     if (emailSent) {
@@ -466,7 +570,6 @@ app.post('/verify-otp', async (req, res) => {
       return res.status(400).json({ status: 'error', message: 'All fields required' });
     }
 
-    // Verify OTP
     if (OTP) {
       const otpRecord = await OTP.findOne({ email, otp });
       
@@ -474,22 +577,18 @@ app.post('/verify-otp', async (req, res) => {
         return res.json({ status: 'invalid', message: 'Invalid or expired OTP' });
       }
 
-      // OTP is valid, delete it
       await OTP.deleteOne({ _id: otpRecord._id });
     }
 
-    // Check if user already exists (double check)
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return res.json({ status: 'exists', message: 'Username or email already exists' });
     }
 
-    // Create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
-    // Send welcome email after successful verification
     await sendWelcomeEmail(email, username);
 
     res.json({ status: 'success', message: 'Account created successfully' });
@@ -499,6 +598,125 @@ app.post('/verify-otp', async (req, res) => {
   }
 });
 
+// Change Password (for logged-in users) - ✅ UPDATED
+app.post('/change-password', async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+
+    if (!username || !currentPassword || !newPassword) {
+      return res.status(400).json({ status: 'error', message: 'All fields required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.json({ status: 'weak', message: 'Password must be at least 8 characters' });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({ status: 'nouser', message: 'User not found' });
+    }
+
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!isValidPassword) {
+      return res.json({ status: 'incorrect', message: 'Current password is incorrect' });
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.json({ status: 'same', message: 'New password must be different from current password' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // ✅ NEW: Send confirmation email
+    if (user.email) {
+      await sendPasswordChangedEmail(user.email, username);
+    }
+
+    res.json({ status: 'success', message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
+});
+
+// Reset Password - Request OTP
+app.post('/request-password-reset', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ status: 'error', message: 'Email required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ status: 'success', message: 'If email exists, OTP has been sent' });
+    }
+
+    const otp = generateOTP();
+
+    if (OTP) {
+      await OTP.deleteMany({ email });
+      await OTP.create({ email, otp });
+    }
+
+    const emailSent = await sendPasswordResetEmail(email, otp);
+
+    if (emailSent) {
+      res.json({ status: 'success', message: 'OTP sent to email' });
+    } else {
+      res.status(500).json({ status: 'error', message: 'Failed to send OTP' });
+    }
+  } catch (err) {
+    console.error('Request password reset error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
+});
+
+// Reset Password - Verify OTP and Change Password - ✅ UPDATED
+app.post('/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ status: 'error', message: 'All fields required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.json({ status: 'weak', message: 'Password must be at least 8 characters' });
+    }
+
+    if (OTP) {
+      const otpRecord = await OTP.findOne({ email, otp });
+
+      if (!otpRecord) {
+        return res.json({ status: 'invalid', message: 'Invalid or expired OTP' });
+      }
+
+      await OTP.deleteOne({ _id: otpRecord._id });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ status: 'nouser', message: 'User not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // ✅ NEW: Send confirmation email
+    await sendPasswordChangedEmail(email, user.username);
+
+    res.json({ status: 'success', message: 'Password reset successfully' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
+});
 
 // Only listen locally
 if (process.env.NODE_ENV !== 'production') {

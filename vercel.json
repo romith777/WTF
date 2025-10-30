@@ -11,6 +11,9 @@
     { "src": "/login", "dest": "backend/server.js" },
     { "src": "/request-otp", "dest": "backend/server.js" },
     { "src": "/verify-otp", "dest": "backend/server.js" },
+    { "src": "/change-password", "dest": "backend/server.js" },
+    { "src": "/request-password-reset", "dest": "backend/server.js" },
+    { "src": "/reset-password", "dest": "backend/server.js" },
     { "src": "/api/cart(.*)", "dest": "backend/server.js" },
     { "src": "/api/favorites(.*)", "dest": "backend/server.js" },
     { "src": "/(.*)", "dest": "$1" }
