@@ -252,8 +252,14 @@ function generateOTP() {
   return crypto.randomInt(100000, 999999).toString();
 }
 
-// ✅ CHANGED: Send OTP Email using MAILUSER
+// Send OTP Email with detailed error logging
 async function sendOTPEmail(email, otp) {
+  // Check if email credentials are configured
+  if (!process.env.MAILUSER || !process.env.MAILPASS) {
+    console.error('Email credentials not configured. MAILUSER:', process.env.MAILUSER ? 'set' : 'missing', 'MAILPASS:', process.env.MAILPASS ? 'set' : 'missing');
+    return false;
+  }
+
   const mailOptions = {
     from: process.env.MAILUSER,
     to: email,
@@ -296,13 +302,18 @@ async function sendOTPEmail(email, otp) {
   };
 
   try {
+    console.log('Attempting to send email to:', email);
     await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to:', email);
     return true;
   } catch (error) {
-    console.error('Error sending OTP email:', error);
+    console.error('Error sending OTP email:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error response:', error.response);
     return false;
   }
 }
+
 
 // Route: Request OTP (Step 1 of signup)
 app.post('/request-otp', async (req, res) => {
