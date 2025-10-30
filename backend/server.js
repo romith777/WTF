@@ -314,6 +314,107 @@ async function sendOTPEmail(email, otp) {
   }
 }
 
+// Send Verification Success/Welcome Email
+async function sendWelcomeEmail(email, username) {
+  if (!process.env.MAILUSER || !process.env.MAILPASS) {
+    console.error('Email credentials not configured');
+    return false;
+  }
+
+  const mailOptions = {
+    from: process.env.MAILUSER,
+    to: email,
+    subject: 'Welcome to WTPRINTS - Account Verified! 🎉',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: 'League Spartan', Arial, sans-serif; background-color: #f8f8f8; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+          .header { text-align: center; margin-bottom: 30px; }
+          .logo { font-size: 32px; font-weight: 800; color: #ee0652; letter-spacing: 1px; }
+          .success-icon { text-align: center; font-size: 60px; margin: 20px 0; }
+          .welcome-box { background: linear-gradient(135deg, #ee0652, #ff0066); color: white; padding: 30px; border-radius: 10px; text-align: center; margin: 30px 0; }
+          .welcome-title { font-size: 28px; font-weight: 800; margin: 10px 0; }
+          .message { color: #666; line-height: 1.8; font-size: 16px; margin: 15px 0; }
+          .button { display: inline-block; background: #ee0652; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+          .features { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .features h3 { color: #333; margin-bottom: 15px; }
+          .features ul { list-style: none; padding: 0; }
+          .features li { padding: 8px 0; color: #666; }
+          .features li:before { content: "✓ "; color: #ee0652; font-weight: bold; margin-right: 10px; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center; color: #999; font-size: 14px; }
+          .social-links { margin: 20px 0; }
+          .social-links a { color: #ee0652; text-decoration: none; margin: 0 10px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">WTPRINTS</div>
+          </div>
+
+          <div class="success-icon">✅</div>
+
+          <div class="welcome-box">
+            <div class="welcome-title">Welcome to WTPRINTS!</div>
+            <p style="margin: 10px 0; font-size: 18px;">Hey ${username}, your account is now verified!</p>
+          </div>
+
+          <p class="message">
+            Thank you for joining the WTPRINTS family! We're thrilled to have you on board. 
+            Your email has been successfully verified, and your account is ready to go.
+          </p>
+
+          <div style="text-align: center;">
+            <a href="${process.env.WEBSITE_URL || 'https://wtprints.vercel.app'}/login.html" class="button">Start Shopping Now</a>
+          </div>
+
+          <div class="features">
+            <h3>What You Can Do Now:</h3>
+            <ul>
+              <li>Browse our exclusive collection of unique prints</li>
+              <li>Save your favorite items to your wishlist</li>
+              <li>Enjoy fast and secure checkout</li>
+              <li>Track your orders in real-time</li>
+              <li>Get exclusive member-only deals and early access</li>
+            </ul>
+          </div>
+
+          <p class="message">
+            If you have any questions or need assistance, our support team is here to help. 
+            Simply reply to this email or visit our help center.
+          </p>
+
+          <div class="footer">
+            <p style="margin-bottom: 15px;"><strong>Stay Connected</strong></p>
+            <div class="social-links">
+              <a href="#">Instagram</a> | 
+              <a href="#">Facebook</a> | 
+              <a href="#">Twitter</a>
+            </div>
+            <p style="margin-top: 20px;">© 2025 WTPRINTS. All rights reserved.</p>
+            <p style="margin-top: 10px;">Stay unique. Stay printed.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  try {
+    console.log('Sending welcome email to:', email);
+    await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent successfully to:', email);
+    return true;
+  } catch (error) {
+    console.error('Error sending welcome email:', error.message);
+    return false;
+  }
+}
+
+
 
 // Route: Request OTP (Step 1 of signup)
 app.post('/request-otp', async (req, res) => {
@@ -388,12 +489,16 @@ app.post('/verify-otp', async (req, res) => {
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
+    // Send welcome email after successful verification
+    await sendWelcomeEmail(email, username);
+
     res.json({ status: 'success', message: 'Account created successfully' });
   } catch (err) {
     console.error('Verify OTP error:', err);
     res.status(500).json({ status: 'error', message: 'Server error' });
   }
 });
+
 
 // Only listen locally
 if (process.env.NODE_ENV !== 'production') {
