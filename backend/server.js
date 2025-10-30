@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;  // ✅ FIXED: Was API_URI
+const PORT = process.env.PORT || 3000;
 
 // Load models
 let Cart = null;
@@ -36,20 +36,47 @@ try {
   console.warn('Product model not loaded');
 }
 
-// MongoDB connection
+// ✅ FIXED: Cache the connection for serverless
+let cachedDb = null;
+
+// MongoDB connection with proper serverless configuration
 async function connectDB() {
   const uri = process.env.MONGODB_URI;
+  
   if (!uri) {
-    console.warn('MONGODB_URI not set');
-    return;
+    console.warn('MONGODB_URI not set in environment variables');
+    return null;
   }
+
+  // Return cached connection if available
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    console.log('Using cached MongoDB connection');
+    return cachedDb;
+  }
+
   try {
-    await mongoose.connect(uri);
-    console.log('MongoDB connected');
+    // Optimized settings for Vercel serverless
+    const options = {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10, // Limit connection pool
+      minPoolSize: 1,
+      maxIdleTimeMS: 10000,
+      retryWrites: true,
+      w: 'majority'
+    };
+
+    await mongoose.connect(uri, options);
+    cachedDb = mongoose.connection;
+    console.log('MongoDB connected successfully');
+    return cachedDb;
   } catch (err) {
-    console.error('MongoDB error:', err.message);
+    console.error('MongoDB connection error:', err.message);
+    return null;
   }
 }
+
+// Connect on startup
 connectDB();
 
 // Schemas
@@ -71,8 +98,16 @@ const Favorites = mongoose.models.Favorites || mongoose.model('Favorites', favor
 app.use(cors());
 app.use(express.json());
 
-// ✅ FIXED: Serve static files from parent directory (root folder)
+// Serve static files from parent directory (root folder)
 app.use(express.static(path.join(__dirname, '..')));
+
+// ✅ ADDED: Middleware to ensure DB connection before each request
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
+  next();
+});
 
 // Health check
 app.get('/health', (req, res) => {
@@ -80,7 +115,8 @@ app.get('/health', (req, res) => {
     status: 'ok', 
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     timestamp: new Date(),
-    message: 'Backend is running!'
+    message: 'Backend is running!',
+    env_check: process.env.MONGODB_URI ? 'MONGODB_URI is set' : 'MONGODB_URI is missing'
   });
 });
 
@@ -100,6 +136,7 @@ app.get('/products', async (req, res) => {
       joggers: productsData?.joggers || []
     });
   } catch (err) {
+    console.error('Products error:', err);
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
@@ -118,6 +155,7 @@ app.post('/signup', async (req, res) => {
     await new User({ username, email, password: hashed }).save();
     res.json({ status: 'success' });
   } catch (err) {
+    console.error('Signup error:', err);
     res.status(500).json({ status: 'error' });
   }
 });
@@ -137,6 +175,7 @@ app.post('/login', async (req, res) => {
     }
     res.json({ status: 'success', wt_user: user.username, email: user.email });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ status: 'error' });
   }
 });
@@ -156,6 +195,7 @@ app.post('/api/cart', async (req, res) => {
     }
     res.json({ message: 'cart saved', itemCount: items.length });
   } catch (err) {
+    console.error('Cart error:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
@@ -165,6 +205,7 @@ app.get('/api/cart/:username', async (req, res) => {
     const cartData = Cart ? await Cart.findOne({ username: req.params.username }) : null;
     res.json({ username: req.params.username, items: cartData?.items || [] });
   } catch (err) {
+    console.error('Get cart error:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
@@ -182,6 +223,7 @@ app.post('/api/favorites', async (req, res) => {
     );
     res.json({ message: 'favorites saved' });
   } catch (err) {
+    console.error('Favorites error:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
@@ -191,16 +233,17 @@ app.get('/api/favorites/:username', async (req, res) => {
     const favData = await Favorites.findOne({ username: req.params.username });
     res.json({ username: req.params.username, items: favData?.items || [] });
   } catch (err) {
+    console.error('Get favorites error:', err);
     res.status(500).json({ error: 'server error' });
   }
 });
 
-// Email transporter setup
+// ✅ CHANGED: Email transporter setup using MAILUSER and MAILPASS
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
+    user: process.env.MAILUSER,
+    pass: process.env.MAILPASS
   }
 });
 
@@ -209,10 +252,10 @@ function generateOTP() {
   return crypto.randomInt(100000, 999999).toString();
 }
 
-// Send OTP Email
+// ✅ CHANGED: Send OTP Email using MAILUSER
 async function sendOTPEmail(email, otp) {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.MAILUSER,
     to: email,
     subject: 'WTPRINTS - Email Verification OTP',
     html: `
