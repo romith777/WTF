@@ -358,7 +358,7 @@ async function sendWelcomeEmail(email, username) {
             Your email has been successfully verified, and your account is ready to go.
           </p>
           <div style="text-align: center;">
-            <a href="{'https://wtf-murex-pi.vercel.app'}/login.html" class="button">Start Shopping Now</a>
+            <a href="${process.env.WEBSITE_URL || 'https://wtf-murex-pi.vercel.app'}/login.html" class="button">Start Shopping Now</a>
           </div>
           <div class="features">
             <h3>What You Can Do Now:</h3>
@@ -437,7 +437,7 @@ async function sendPasswordChangedEmail(email, username) {
             You can now log in using your new password.
           </p>
           <div style="text-align: center;">
-            <a href="${process.env.WEBSITE_URL || 'https://wtprints.vercel.app'}/login.html" class="button">Login to Your Account</a>
+            <a href="${process.env.WEBSITE_URL || 'https://wtf-murex-pi.vercel.app'}/login.html" class="button">Login to Your Account</a>
           </div>
           <div class="warning-box">
             <p style="margin: 0; color: #856404;">
